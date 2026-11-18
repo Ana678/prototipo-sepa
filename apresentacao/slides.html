@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>SEPA · Fichas e Relatórios — Validação</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  @font-face { font-family: 'Rawline'; src: url('fonts/rawline-400.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+  @font-face { font-family: 'Rawline'; src: url('fonts/rawline-400i.woff2') format('woff2'); font-weight: 400; font-style: italic; }
+  @font-face { font-family: 'Rawline'; src: url('fonts/rawline-500.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+  @font-face { font-family: 'Rawline'; src: url('fonts/rawline-600.woff2') format('woff2'); font-weight: 600; font-style: normal; }
+  @font-face { font-family: 'Rawline'; src: url('fonts/rawline-700.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+  :root {
+    --sepa: #2d438f; --sepa-700: #24367a; --sepa-900: #141e45; --sepa-50: #eef1f9; --sepa-100: #dce3f2; --sepa-200: #b9c6e5;
+    --ink: #0f172a; --ink-2: #334155; --muted: #64748b; --line: #e2e8f0; --bg: #f8fafc;
+    --ok: #047857; --ok-bg: #ecfdf5; --warn: #b45309; --warn-bg: #fffbeb; --err: #b91c1c; --err-bg: #fef2f2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: 'Rawline', 'Noto Sans', system-ui, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; break-after: page; background: #fff; padding: 56px 72px 48px; display: flex; flex-direction: column; }
+  .slide:last-child { page-break-after: auto; }
+
+  /* cabeçalho/rodapé padrão */
+  .kicker { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--sepa); margin-bottom: 8px; }
+  h1 { font-size: 36px; line-height: 1.15; font-weight: 700; letter-spacing: -.01em; }
+  h2 { font-size: 30px; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; margin-bottom: 6px; }
+  .lead { font-size: 17px; color: var(--ink-2); line-height: 1.5; max-width: 980px; }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 22px; display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--sepa); }
+  .body { flex: 1; margin-top: 26px; min-height: 0; }
+
+  /* capa e divisórias */
+  .cover { background: var(--sepa); color: #fff; padding: 72px 88px; justify-content: space-between; }
+  .cover img.logo { width: 210px; }
+  .cover h1 { font-size: 50px; max-width: 900px; }
+  .cover .sub { font-size: 20px; color: var(--sepa-100); margin-top: 16px; max-width: 860px; line-height: 1.45; }
+  .cover .meta { font-size: 14px; color: var(--sepa-200); display: flex; gap: 28px; }
+  .cover .ring { position: absolute; right: -160px; top: -160px; width: 560px; height: 560px; border-radius: 50%; border: 70px solid rgba(255,255,255,.06); }
+  .cover .ring2 { position: absolute; right: 60px; bottom: -220px; width: 420px; height: 420px; border-radius: 50%; border: 50px solid rgba(255,255,255,.05); }
+  .divider { background: var(--sepa-900); color: #fff; justify-content: center; padding: 72px 88px; }
+  .divider .num { font-size: 18px; color: var(--sepa-200); font-weight: 600; letter-spacing: .1em; }
+  .divider h1 { font-size: 46px; margin-top: 10px; }
+  .divider p { font-size: 19px; color: var(--sepa-100); margin-top: 14px; max-width: 820px; line-height: 1.5; }
+
+  /* grids e cartões */
+  .grid { display: grid; gap: 18px; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; background: #fff; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .card p, .card li { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .card ul { padding-left: 18px; }
+  .card.solid, .card.solid p, .card.solid li { color: #fff; }
+  .card.solid li { color: var(--sepa-100); }
+  .card.tint { background: var(--sepa-50); border-color: var(--sepa-100); }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--sepa-50); color: var(--sepa); }
+  .quote { font-size: 15px; font-style: italic; color: var(--ink-2); border-left: 3px solid var(--sepa); padding: 2px 0 2px 14px; line-height: 1.45; }
+  .quote small { display: block; font-style: normal; color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* fluxo em caixas */
+  .flow { display: flex; align-items: stretch; gap: 0; }
+  .step { flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px; background: #fff; font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+  .step b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 4px; }
+  .step.hl { background: var(--sepa); color: var(--sepa-100); border-color: var(--sepa); }
+  .step.hl b { color: #fff; }
+  .step.bad { background: var(--err-bg); border-color: #fecaca; }
+  .arrow { width: 28px; display: flex; align-items: center; justify-content: center; color: var(--sepa-200); font-size: 22px; font-weight: 700; flex: 0 0 28px; }
+
+  /* slide de caso de uso */
+  .uc { display: grid; grid-template-columns: 470px 1fr; gap: 30px; flex: 1; min-height: 0; margin-top: 18px; }
+  .uc .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .uc .tag { font-size: 12px; padding: 4px 10px; border-radius: 8px; background: #f1f5f9; color: var(--ink-2); }
+  .uc .tag b { color: var(--ink); }
+  .uc h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 14px 0 6px; }
+  .uc ol { padding-left: 20px; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .uc ol li { margin-bottom: 3px; }
+  .uc ul.rules { list-style: none; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+  .uc ul.rules li { padding-left: 18px; position: relative; margin-bottom: 3px; }
+  .uc ul.rules li::before { content: ''; position: absolute; left: 2px; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--sepa); }
+  .shot { border-radius: 12px; border: 1px solid var(--line); box-shadow: 0 12px 32px -12px rgba(15,23,42,.25); overflow: hidden; background: var(--bg); position: relative; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; }
+  .shot .cap { position: absolute; left: 12px; bottom: 12px; background: rgba(15,23,42,.82); color: #fff; font-size: 12px; padding: 5px 10px; border-radius: 6px; }
+  .resolve { margin-top: 14px; background: var(--ok-bg); border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #065f46; line-height: 1.45; }
+  .resolve b { color: #064e3b; }
+
+  /* tabela */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; padding: 9px 12px; border-bottom: 2px solid var(--line); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); color: var(--ink-2); vertical-align: top; line-height: 1.4; }
+  td b { color: var(--ink); }
+  .ucnum { font-weight: 700; color: var(--sepa); white-space: nowrap; }
+
+  /* timeline do ciclo */
+  .timeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 30px; }
+  .timeline::before { content: ''; position: absolute; left: 4%; right: 4%; top: 22px; height: 3px; background: var(--sepa-100); }
+  .tl { position: relative; text-align: center; }
+  .tl .dot { width: 46px; height: 46px; border-radius: 50%; background: var(--sepa); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 14px; border: 5px solid #fff; box-shadow: 0 0 0 2px var(--sepa-100); }
+  .tl b { font-size: 15px; display: block; margin-bottom: 4px; }
+  .tl p { font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+
+  .q { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .q .n { width: 28px; height: 28px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; border: 1px solid #fde68a; }
+  .q p { font-size: 14.5px; color: var(--ink-2); line-height: 1.45; }
+  .q p b { color: var(--ink); }
+  .q small { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- 1. CAPA -->
+<section class="slide cover">
+  <div class="ring"></div><div class="ring2"></div>
+  <img class="logo" src="img/logo.png" alt="SEPA">
+  <div>
+    <p style="font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--sepa-200);font-weight:700;margin-bottom:14px">Validação de ideias · protótipo v0.1</p>
+    <h1>Módulo de Fichas de Atendimento e Relatórios</h1>
+    <p class="sub">Principais ideias, casos de uso e como cada um aparece no sistema, para validarmos com o Setor de Registro, supervisores e gestão do SEPA.</p>
+  </div>
+  <div class="meta"><span>DIM0518 · Planejamento e Gerenciamento de Projetos</span><span>IMD / UFRN</span><span>Novembro de 2026</span></div>
+</section>
+
+<!-- 2. OBJETIVO -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Por que estamos aqui</p>
+  <h2>O que queremos validar hoje</h2>
+  <p class="lead">Construímos a proposta a partir dos relatórios de gestão 2023–2025, das planilhas e da ficha mensal enviadas pelo SEPA e das entrevistas com o Setor de Registro. Antes de seguir, precisamos confirmar se entendemos certo.</p>
+  <div class="body grid g3">
+    <div class="card tint"><h3>1 · A ideia central</h3><p>A Ficha de Acompanhamento Mensal passa a ser preenchida <b>no sistema</b> e vira a fonte única de dados para controle, Nada Consta e relatórios.</p></div>
+    <div class="card tint"><h3>2 · Os fluxos</h3><p>Os <b>8 casos de uso</b> principais: quem faz o quê, em que ordem, e quais regras do SEPA o sistema aplica sozinho.</p></div>
+    <div class="card tint"><h3>3 · As telas</h3><p>Como cada caso de uso aparece no <b>protótipo navegável</b>, com dados fictícios, e o que ainda está em aberto.</p></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>2</span></div>
+</section>
+
+<!-- 3. COMO É HOJE -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Situação atual</p>
+  <h2>Hoje: uma ficha em Word vira várias planilhas</h2>
+  <div class="body">
+    <div class="flow">
+      <div class="step"><b>Atendimento</b>Estagiário atende e registra o prontuário no SigSaúde</div>
+      <div class="arrow">›</div>
+      <div class="step bad"><b>Ficha em Word</b>Enviada por e-mail até o dia 05, campos livres</div>
+      <div class="arrow">›</div>
+      <div class="step bad"><b>Supervisor</b>Confere com o SigSaúde e responde por e-mail “zero pendências”</div>
+      <div class="arrow">›</div>
+      <div class="step bad"><b>Registro</b>Digita tudo em planilhas anuais e marca liberado/bloqueado</div>
+      <div class="arrow">›</div>
+      <div class="step bad"><b>Relatórios</b>Refeitos à mão a cada pedido; usuários deduplicados um a um</div>
+    </div>
+    <div class="grid g3" style="margin-top:30px">
+      <p class="quote">“Você fica numa retificação sem fim, desde as duas besteirinhas.”<small>Setor de Registro, sobre erros nas fichas</small></p>
+      <p class="quote">“Uma dificuldade é… num botão, uns filtros lá, aí o bicho gera tudo para você.”<small>Setor de Registro, sobre os relatórios</small></p>
+      <p class="quote">“Eu queria botar fulaninho e o sistema dizer em que ano esteve, onde, e se deixou pendência.”<small>Setor de Registro, sobre o Nada Consta</small></p>
+    </div>
+    <p class="lead" style="margin-top:26px;font-size:15px">O relatório do SigSaúde não é usado: prontuários duplicados e dados inconsistentes. Hoje, <b>a ficha mensal é a verdadeira fonte dos números</b>.</p>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>3</span></div>
+</section>
+
+<!-- 4. IDEIA CENTRAL -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Proposta</p>
+  <h2>A ideia central: o dado entra certo uma vez só</h2>
+  <p class="lead">Se a ficha entra estruturada e validada, todo o resto deixa de ser retrabalho e vira consulta sobre o mesmo dado.</p>
+  <div class="body" style="display:grid;grid-template-columns:1fr 60px 1.25fr;align-items:center;gap:0">
+    <div class="card solid" style="background:var(--sepa);border-color:var(--sepa);padding:26px">
+      <p style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sepa-200)!important;font-weight:700">Entrada</p>
+      <p style="font-size:24px;font-weight:700;margin:6px 0 12px">Ficha mensal digital</p>
+      <ul style="padding-left:18px;font-size:14px;line-height:1.6;color:var(--sepa-100)">
+        <li>Identificação vem do cadastro</li>
+        <li>Uma linha por usuário, com a situação no mês</li>
+        <li>Total calculado pelas datas</li>
+        <li>Não envia com erro</li>
+        <li>Validação do supervisor no sistema</li>
+      </ul>
+    </div>
+    <div class="arrow" style="font-size:40px;width:60px;flex-basis:60px">›</div>
+    <div class="grid g2" style="gap:12px">
+      <div class="card"><h3>Painel de envios</h3><p>Quem enviou, quem está atrasado, cobrança automática.</p></div>
+      <div class="card"><h3>Uso de salas</h3><p>Liberado / bloqueado por pessoa, repassado ao módulo de salas.</p></div>
+      <div class="card"><h3>Usuários e casos</h3><p>Desfechos e alerta do limite de 1 ano (+1).</p></div>
+      <div class="card"><h3>Nada Consta</h3><p>Histórico do discente em todos os anos.</p></div>
+      <div class="card" style="grid-column:span 2"><h3>Relatórios</h3><p>Quadros do Relatório de Gestão e do Interações, com usuários sem duplicidade, filtros e exportação.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>4</span></div>
+</section>
+
+<!-- 5. ATORES -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Quem usa</p>
+  <h2>Quatro perfis, um mesmo dado</h2>
+  <div class="body grid g4">
+    <div class="card"><span class="pill">Atuante</span><h3 style="margin-top:10px">Estagiário · Extensionista · Técnico</h3><ul><li>Preenche a ficha do mês</li><li>Acompanha a situação das fichas</li><li>Vê se está liberado para salas</li></ul></div>
+    <div class="card"><span class="pill">Supervisor</span><h3 style="margin-top:10px">Supervisor de campo</h3><ul><li>Confere a ficha com o SigSaúde</li><li>Valida ou devolve com pendência</li><li>Pode pedir “não bloquear”</li></ul></div>
+    <div class="card"><span class="pill">Registro</span><h3 style="margin-top:10px">Setor de Registro</h3><ul><li>Acompanha envios e cobra</li><li>Registra desfechos e atividades</li><li>Emite Nada Consta e relatórios</li></ul></div>
+    <div class="card"><span class="pill">Gestão</span><h3 style="margin-top:10px">Direção do SEPA</h3><ul><li>Consulta indicadores</li><li>Gera os relatórios de Gestão e do Interações</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:18px;background:var(--bg)">
+    <h3>Fora do escopo deste módulo</h3>
+    <p>Prontuários (continuam no SigSaúde) · reserva de salas e chaves (outro grupo; nós só fornecemos “liberado/bloqueado”) · ficha de cadastro do usuário (dificuldade de acesso digital do público) · digitalização de documentos.</p>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>5</span></div>
+</section>
+
+<!-- 6. MAPA DE CASOS DE USO -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Casos de uso</p>
+  <h2>Os 8 casos de uso principais</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th style="width:70px">#</th><th>Caso de uso</th><th style="width:230px">Ator principal</th><th style="width:250px">Tela no protótipo</th></tr></thead>
+      <tbody>
+        <tr><td class="ucnum">UC01</td><td><b>Preencher e enviar a ficha mensal</b></td><td>Atuante</td><td>Minhas fichas · Preencher ficha</td></tr>
+        <tr><td class="ucnum">UC02</td><td><b>Validar ou devolver a ficha</b></td><td>Supervisor de campo</td><td>Validar fichas</td></tr>
+        <tr><td class="ucnum">UC03</td><td><b>Acompanhar envios e cobrar pendentes</b></td><td>Setor de Registro</td><td>Painel do mês</td></tr>
+        <tr><td class="ucnum">UC04</td><td><b>Informar situação para uso de salas</b></td><td>Sistema → módulo de salas</td><td>Painel do mês · Minhas fichas</td></tr>
+        <tr><td class="ucnum">UC05</td><td><b>Acompanhar usuários, desfechos e limite de 1 ano</b></td><td>Setor de Registro</td><td>Usuários e casos</td></tr>
+        <tr><td class="ucnum">UC06</td><td><b>Registrar atividades coletivas</b></td><td>Setor de Registro</td><td>Atividades coletivas</td></tr>
+        <tr><td class="ucnum">UC07</td><td><b>Consultar histórico e emitir Nada Consta</b></td><td>Setor de Registro</td><td>Nada Consta</td></tr>
+        <tr><td class="ucnum">UC08</td><td><b>Gerar relatórios</b></td><td>Gestão · Setor de Registro</td><td>Relatórios</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>6</span></div>
+</section>
+
+<!-- 7. CICLO MENSAL -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Como os casos de uso se encadeiam</p>
+  <h2>O ciclo de cada mês</h2>
+  <p class="lead">Os prazos são os que o SEPA já pratica: ficha até o dia 05 e permissão de salas em janelas do dia 15 ao dia 15.</p>
+  <div class="body">
+    <div class="timeline">
+      <div class="tl"><div class="dot">1–31</div><b>Atendimentos</b><p>O atuante registra sessões no SigSaúde e vai preenchendo o rascunho da ficha.</p></div>
+      <div class="tl"><div class="dot">03</div><b>Lembrete</b><p>Quem ainda não enviou recebe aviso automático (UC03).</p></div>
+      <div class="tl"><div class="dot">05</div><b>Prazo de envio</b><p>Ficha enviada ao supervisor; depois disso fica “atrasada” (UC01).</p></div>
+      <div class="tl"><div class="dot">05–15</div><b>Validação</b><p>Supervisor confere com o SigSaúde e valida ou devolve (UC02).</p></div>
+      <div class="tl"><div class="dot">15</div><b>Nova janela de salas</b><p>Liberado ou bloqueado por pessoa, informado ao módulo de salas (UC04).</p></div>
+    </div>
+    <div class="card tint" style="margin-top:34px">
+      <p><b>Ao longo do ano</b>, os mesmos dados alimentam UC05 (limite de 1 ano), UC06 (atividades), UC07 (Nada Consta) e UC08 (relatórios de meio e fim de ano), sem redigitação.</p>
+    </div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>7</span></div>
+</section>
+
+<!-- 8. UC01 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC01 · Atuante</p>
+  <h2>Preencher e enviar a ficha mensal</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Gatilho:</b> fim do mês de atendimentos</span><span class="tag"><b>Prazo:</b> dia 05</span></div>
+      <h4>Fluxo principal</h4>
+      <ol>
+        <li>Abre a ficha do mês: nome, vínculo e supervisor vêm do cadastro.</li>
+        <li>Adiciona cada usuário atendido (modalidade + usuário), uma linha por usuário.</li>
+        <li>Em cada linha, marca as datas das sessões; o total é calculado.</li>
+        <li>Escolhe a <b>situação no mês</b>: segue, iniciou, desistiu, perdeu a vaga, alta ou encaminhado.</li>
+        <li>Corrige o que estiver destacado e envia ao supervisor.</li>
+      </ol>
+      <h4>Regras aplicadas pelo sistema</h4>
+      <ul class="rules">
+        <li>Data fora do mês ou repetida bloqueia o envio</li>
+        <li>Encaminhamento exige dizer para onde</li>
+        <li>Mês sem atendimentos exige justificativa</li>
+      </ul>
+      <div class="resolve"><b>Resolve:</b> erros de digitação, “2 datas e 3 atendimentos” e o ciclo de retificação por e-mail.</div>
+    </div>
+    <div class="shot"><img src="img/tela-fichas-nova.png" alt=""><span class="cap">Preencher ficha do mês</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>8</span></div>
+</section>
+
+<!-- 9. UC02 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC02 · Supervisor de campo</p>
+  <h2>Validar ou devolver a ficha</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Gatilho:</b> ficha enviada</span><span class="tag"><b>Substitui:</b> e-mail “zero pendências”</span></div>
+      <h4>Fluxo principal</h4>
+      <ol>
+        <li>Vê a fila de fichas dos seus supervisionados.</li>
+        <li>Abre a ficha e confere as datas com o SigSaúde.</li>
+        <li><b>Valida</b>: o Registro é notificado e a pessoa fica liberada.</li>
+      </ol>
+      <h4>Fluxo alternativo: pendência</h4>
+      <ol>
+        <li>Clica em <b>Devolver com pendência</b> e descreve o problema.</li>
+        <li>Opcional: marca <b>“não bloquear salas”</b> quando a correção já foi combinada.</li>
+        <li>O atuante corrige e reenvia; volta para a fila.</li>
+      </ol>
+      <div class="resolve"><b>Resolve:</b> a triangulação ficha × SigSaúde × Registro feita por e-mails soltos, com risco de se perder.</div>
+    </div>
+    <div class="shot"><img src="img/tela-validacao.png" alt=""><span class="cap">Validar fichas</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>9</span></div>
+</section>
+
+<!-- 10. UC03 + UC04 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC03 e UC04 · Setor de Registro</p>
+  <h2>Acompanhar envios e informar o uso de salas</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Substitui:</b> “verdinhos e vermelhinhos” + planilha de permissões</span></div>
+      <h4>UC03 · Acompanhar e cobrar</h4>
+      <ol>
+        <li>O painel mostra fichas esperadas, enviadas, validadas e atrasadas.</li>
+        <li>Filtra por vínculo (4º ano, 5º ano, extensão, técnico).</li>
+        <li>Um clique envia lembrete a quem está pendente.</li>
+      </ol>
+      <h4>UC04 · Situação para salas</h4>
+      <ul class="rules">
+        <li>Ficha validada → <b>liberado</b> na janela 15 → 15</li>
+        <li>Não enviada ou com pendência → <b>bloqueado</b></li>
+        <li>Pedido do supervisor → <b>liberado (exceção)</b>, com observação</li>
+        <li>Bloqueio vale <b>para a pessoa</b>, mesmo com dois vínculos</li>
+      </ul>
+      <div class="resolve"><b>Resolve:</b> a recepção consultar duas fontes antes de entregar a chave. O módulo de salas lê a situação direto daqui.</div>
+    </div>
+    <div class="shot"><img src="img/tela-registro-painel.png" alt=""><span class="cap">Painel do mês</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>10</span></div>
+</section>
+
+<!-- 11. UC05 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC05 · Setor de Registro</p>
+  <h2>Acompanhar usuários, desfechos e o limite de 1 ano</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Fonte:</b> fichas validadas</span><span class="tag"><b>Regra:</b> 1 ano, prorrogável por mais 1</span></div>
+      <h4>Fluxo principal</h4>
+      <ol>
+        <li>Lista consolidada: um registro por usuário, com todas as modalidades.</li>
+        <li>O sistema calcula o tempo desde o primeiro atendimento.</li>
+        <li>Alerta para “perto de 1 ano”, “em prorrogação” e “passou de 2 anos”.</li>
+        <li>O Registro ajusta a situação do caso em dois campos.</li>
+      </ol>
+      <h4>Por que dois campos de situação</h4>
+      <ul class="rules">
+        <li>Um encaminhamento (ex.: fonoaudiologia) não encerra o atendimento no SEPA</li>
+        <li>Situações: em atendimento, desistência, perda de vaga, alta, encaminhado, lista de espera, suspenso, segue no próximo ano</li>
+      </ul>
+      <div class="resolve"><b>Resolve:</b> o levantamento manual de “quando foi o primeiro atendimento” e a pergunta “o que aconteceu com esse caso?”.</div>
+    </div>
+    <div class="shot"><img src="img/tela-registro-usuarios.png" alt=""><span class="cap">Usuários e casos</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>11</span></div>
+</section>
+
+<!-- 12. UC06 + UC07 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC06 e UC07 · Setor de Registro</p>
+  <h2>Atividades coletivas e Nada Consta</h2>
+  <div class="grid g2" style="margin-top:18px;flex:1;min-height:0">
+    <div style="display:flex;flex-direction:column;min-height:0">
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC06 · Registrar atividade coletiva</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Reunião, formação, supervisão, grupo ou ação do Interações. A <b>categoria vem de uma lista fechada</b> e o local (no SEPA ou fora) é definido automaticamente.</p>
+      <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> a dúvida “onde eu boto isso?” na hora de montar o relatório.</div>
+      <div class="shot" style="flex:1"><img src="img/tela-registro-atividades.png" alt=""><span class="cap">Atividades coletivas</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;min-height:0">
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC07 · Consultar histórico e emitir Nada Consta</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Busca o discente e vê <b>todos os anos</b> em que atuou, com pendências de ficha e de SigSaúde. Só emite o documento <b>sem pendências</b>; mostra se já foi inserido no SIPAC.</p>
+      <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> abrir a planilha de cada ano, aluno por aluno.</div>
+      <div class="shot" style="flex:1"><img src="img/tela-registro-nada-consta.png" alt=""><span class="cap">Nada Consta</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>12</span></div>
+</section>
+
+<!-- 13. UC08 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC08 · Gestão e Setor de Registro</p>
+  <h2>Gerar relatórios</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Quando:</b> meio e fim do ano, ou pedidos pontuais</span></div>
+      <h4>Fluxo principal</h4>
+      <ol>
+        <li>Escolhe o modelo: <b>Gestão</b>, <b>Interações</b> ou personalizado.</li>
+        <li>Filtra por ano, período, modalidade e vínculo com a UFRN.</li>
+        <li>Confere os indicadores e quadros na tela.</li>
+        <li>Exporta (formato a confirmar).</li>
+      </ol>
+      <h4>Indicadores, como nos relatórios de 2024–2025</h4>
+      <ul class="rules">
+        <li>Usuários <b>sem duplicidade</b> e em 1, 2 ou 3 modalidades</li>
+        <li>Usuários por modalidade × vínculo (externo, aluno, servidor…)</li>
+        <li>Atendimentos por modalidade e por terapeuta</li>
+        <li>Atividades coletivas, participações e supervisões</li>
+        <li>Alunos por curso e centro</li>
+      </ul>
+      <div class="resolve"><b>Resolve:</b> refazer tudo a cada pedido e contar usuários copiando nomes de planilha em planilha.</div>
+    </div>
+    <div class="shot"><img src="img/tela-relatorios.png" alt=""><span class="cap">Relatórios</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>13</span></div>
+</section>
+
+<!-- 14. RASTREABILIDADE -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Rastreabilidade</p>
+  <h2>Cada dificuldade relatada tem uma resposta no sistema</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th style="width:42%">Dificuldade relatada pelo SEPA</th><th>Como o sistema responde</th><th style="width:150px">Caso de uso</th></tr></thead>
+      <tbody>
+        <tr><td>Ficha em Word com campos abertos e erros</td><td>Formulário com cadastro pré-preenchido, listas e validação antes do envio</td><td class="ucnum">UC01</td></tr>
+        <tr><td>Atrasos e cobrança manual</td><td>Painel de envios, lembrete automático e status “atrasada”</td><td class="ucnum">UC03</td></tr>
+        <tr><td>Conferência e liberação por e-mail</td><td>Validar / devolver no sistema, com exceção “não bloquear”</td><td class="ucnum">UC02 · UC04</td></tr>
+        <tr><td>Recepção consulta duas fontes para entregar a chave</td><td>Situação de salas disponível para o módulo de reservas</td><td class="ucnum">UC04</td></tr>
+        <tr><td>Levantamento manual do limite de 1 ano</td><td>Tempo de atendimento calculado e alertas automáticos</td><td class="ucnum">UC05</td></tr>
+        <tr><td>Dúvida sobre como classificar atividades</td><td>Categorias fixas escolhidas no registro</td><td class="ucnum">UC06</td></tr>
+        <tr><td>Nada Consta exige abrir a planilha de cada ano</td><td>Histórico do discente em todos os anos, numa tela</td><td class="ucnum">UC07</td></tr>
+        <tr><td>Relatório refeito a cada pedido; usuários duplicados</td><td>Relatórios com filtros, sobre o dado consolidado e deduplicado</td><td class="ucnum">UC08</td></tr>
+        <tr><td>Conhecimento concentrado em uma pessoa</td><td>Regras dentro do sistema, não na planilha de quem a montou</td><td class="ucnum">Todos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>14</span></div>
+</section>
+
+<!-- 15. PONTOS PARA VALIDAR -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Precisamos da ajuda de vocês</p>
+  <h2>Pontos para validar</h2>
+  <div class="body grid g2" style="gap:6px 40px;align-content:start">
+    <div>
+      <div class="q"><span class="n">1</span><p><b>A ficha no sistema substitui o Word por e-mail?</b><br><small>Base de toda a proposta · Registro e supervisores</small></p></div>
+      <div class="q"><span class="n">2</span><p><b>Quantas faltas levam à perda de vaga?</b> Consecutivas ou no total?<br><small>Regra citada, sem número definido · Coordenação</small></p></div>
+      <div class="q"><span class="n">3</span><p><b>Em que formato exportar os relatórios?</b> PDF, planilha, ambos?<br><small>Gestão</small></p></div>
+      <div class="q"><span class="n">4</span><p><b>Qual o prazo do supervisor para validar?</b> E o que acontece se não validar até o dia 15?<br><small>Supervisores · Coordenação</small></p></div>
+      <div class="q"><span class="n">5</span><p><b>De onde vem a lista de espera</b> que aparece no relatório de gestão?<br><small>Registro</small></p></div>
+    </div>
+    <div>
+      <div class="q"><span class="n">6</span><p><b>As categorias de atividades coletivas estão completas?</b><br><small>Registro · Gestão</small></p></div>
+      <div class="q"><span class="n">7</span><p><b>Quem cadastra estagiários, extensionistas e supervisores</b> a cada semestre?<br><small>Registro · outros grupos</small></p></div>
+      <div class="q"><span class="n">8</span><p><b>O que mais o Nada Consta precisa checar</b>, além de fichas e SigSaúde?<br><small>Registro</small></p></div>
+      <div class="q"><span class="n">9</span><p><b>Os relatórios de meio e fim de ano</b> são suficientes, ou a gestão quer um painel sempre atualizado?<br><small>Gestão</small></p></div>
+      <div class="q"><span class="n">10</span><p><b>O detalhamento por curso e centro</b> é necessário já na primeira versão?<br><small>Gestão</small></p></div>
+    </div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>15</span></div>
+</section>
+
+<!-- 16. PRÓXIMOS PASSOS -->
+<section class="slide divider">
+  <p class="num">PRÓXIMOS PASSOS</p>
+  <h1>Depois desta validação</h1>
+  <div class="grid g3" style="margin-top:36px;gap:20px">
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)"><h3 style="color:#fff">1 · Ajustar</h3><p style="color:var(--sepa-100)">Incorporar as respostas e corrigir fluxos e regras no protótipo.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)"><h3 style="color:#fff">2 · Alinhar com os outros grupos</h3><p style="color:var(--sepa-100)">Combinar com reserva de salas e cadastro quem fornece e quem consome cada dado.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)"><h3 style="color:#fff">3 · Documentar</h3><p style="color:var(--sepa-100)">Fechar o documento de requisitos e o escopo revisado da disciplina.</p></div>
+  </div>
+  <p style="margin-top:40px;font-size:15px;color:var(--sepa-200)">Protótipo navegável disponível para teste · todos os dados exibidos são fictícios.</p>
+</section>
+
+</body>
+</html>

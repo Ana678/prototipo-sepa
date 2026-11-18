@@ -1,0 +1,56 @@
+import { useNavigate } from 'react-router-dom'
+import { HOME_PERFIL, NOMES_PERFIL, usePerfil } from '../../context/PerfilContext'
+import { useTema } from '../../context/ThemeContext'
+import type { Perfil } from '../../types'
+import { IconModoClaro, IconModoEscuro, IconPainel, IconPerfil, IconPreencher, IconRelatorios, IconValidar } from '../ui/icons'
+import { SelectMenu } from '../ui/SelectMenu'
+
+/** No protótipo, o perfil é trocado aqui. No sistema real ele virá do login (SIGAA / UFRN). */
+export function Topbar() {
+  const { perfil, setPerfil } = usePerfil()
+  const navigate = useNavigate()
+  const { tema, alternar } = useTema()
+
+  function trocar(p: Perfil) {
+    setPerfil(p)
+    navigate(HOME_PERFIL[p])
+  }
+
+  return (
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white px-12 xl:px-16 dark:bg-slate-900">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
+        Fichas de Atendimento e Relatórios
+      </p>
+      <div className="flex items-center gap-3">
+        <span className="rounded-md bg-amber-50 dark:bg-amber-950/50 px-2 py-1 text-xs font-medium text-amber-800 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-800">
+          Protótipo · dados fictícios
+        </span>
+        <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300">
+          <IconPerfil size={18} /> Ver como
+        </span>
+        <SelectMenu
+          ariaLabel="Ver o sistema como"
+          tamanho="sm"
+          className="w-72"
+          value={perfil}
+          onChange={trocar}
+          opcoes={[
+            { valor: 'atuante', rotulo: NOMES_PERFIL.atuante, icone: IconPreencher },
+            { valor: 'supervisor', rotulo: NOMES_PERFIL.supervisor, icone: IconValidar },
+            { valor: 'registro', rotulo: NOMES_PERFIL.registro, icone: IconPainel },
+            { valor: 'gestao', rotulo: NOMES_PERFIL.gestao, icone: IconRelatorios },
+          ]}
+        />
+        <button
+          type="button"
+          onClick={alternar}
+          aria-label={tema === 'escuro' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          title={tema === 'escuro' ? 'Modo claro' : 'Modo escuro'}
+          className="ml-1 inline-flex size-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-sepa-700 focus-visible:outline-2 focus-visible:outline-sepa-500 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-sepa-200"
+        >
+          {tema === 'escuro' ? <IconModoClaro size={22} /> : <IconModoEscuro size={22} />}
+        </button>
+      </div>
+    </header>
+  )
+}
