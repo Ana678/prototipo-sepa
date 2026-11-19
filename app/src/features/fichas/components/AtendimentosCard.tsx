@@ -3,6 +3,7 @@ import { Textarea } from '../../../components/ui/Field'
 import type { ErroFicha } from '../validarFicha'
 import { AdicionarUsuario } from './AdicionarUsuario'
 import { AtendimentoRow } from './AtendimentoRow'
+import { LegendaSessoes } from '../../prontuarios/LegendaSessoes'
 
 interface Props {
   sessoes: LinhaSessao[]
@@ -30,7 +31,12 @@ export function AtendimentosCard(props: Props) {
       <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 sm:px-5">
         <div>
           <h2 className="text-base font-semibold text-slate-900 dark:text-slate-50">Atendimentos do mês</h2>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Um usuário por linha: datas das sessões e como ele está neste mês.</p>
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Um usuário por linha. Cada data é uma sessão com prontuário: clique nela para escrever ou ver.</p>
+          {!semAtendimentos && (
+            <div className="mt-2">
+              <LegendaSessoes />
+            </div>
+          )}
         </div>
         {!semAtendimentos && (
           <p className="text-sm text-slate-500 dark:text-slate-400">

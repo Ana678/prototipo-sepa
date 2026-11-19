@@ -1,4 +1,4 @@
-import type { FichaMensal } from '../../types'
+import type { FichaMensal, Prontuario } from '../../types'
 import { diaMes, limitesDoMes } from '../../lib/datas'
 
 export interface ErroFicha {
@@ -12,7 +12,13 @@ export interface ErroFicha {
  * Regras que hoje geram o ciclo de "retificação sem fim" por e-mail.
  * A ficha só pode ser enviada ao supervisor quando a lista volta vazia.
  */
-export function validarFicha(ficha: FichaMensal, semAtendimentos: boolean, justificativa: string): ErroFicha[] {
+export function validarFicha(
+  ficha: FichaMensal,
+  semAtendimentos: boolean,
+  justificativa: string,
+  /** Toda sessão precisa de prontuário enviado ao supervisor (rascunho não conta). */
+  prontuarioDe: (usuarioId: string, data: string) => Prontuario | undefined = () => undefined,
+): ErroFicha[] {
   const erros: ErroFicha[] = []
   const { min, max } = limitesDoMes(ficha.referencia)
 
@@ -38,6 +44,14 @@ export function validarFicha(ficha: FichaMensal, semAtendimentos: boolean, justi
 
     const repetidas = [...new Set(linha.datas.filter((d, i) => linha.datas.indexOf(d) !== i))]
     if (repetidas.length) add(`Data repetida: ${repetidas.map(diaMes).join(', ')}.`)
+
+    if (linha.usuarioId) {
+      const doMes = linha.datas.filter((d) => d >= min && d <= max)
+      const sem = doMes.filter((d) => !prontuarioDe(linha.usuarioId, d))
+      const rascunho = doMes.filter((d) => prontuarioDe(linha.usuarioId, d)?.status === 'rascunho')
+      if (sem.length) add(`Sem prontuário: ${sem.map(diaMes).join(', ')}. Clique na data para registrar.`)
+      if (rascunho.length) add(`Prontuário em rascunho: ${rascunho.map(diaMes).join(', ')}. Envie ao supervisor.`)
+    }
 
     if (linha.situacao === 'Encaminhado' && !linha.observacao.trim()) add('Informe para onde foi o encaminhamento.')
 

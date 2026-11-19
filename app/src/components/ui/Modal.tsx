@@ -27,7 +27,7 @@ export function Modal({ aberto, onFechar, titulo, descricao, children, acoes, ta
             tamanho === 'lg' ? 'max-w-2xl' : 'max-w-lg',
           )}
         >
-          <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+          <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-4 py-4 sm:px-6 dark:border-slate-800">
             <div>
               <DialogTitle className="text-lg font-semibold text-slate-900 dark:text-slate-50">{titulo}</DialogTitle>
               {descricao && <Description className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{descricao}</Description>}
@@ -41,8 +41,8 @@ export function Modal({ aberto, onFechar, titulo, descricao, children, acoes, ta
               <Icon nome="close" size={20} />
             </button>
           </header>
-          <div className="px-6 py-5">{children}</div>
-          {acoes && <footer className="flex justify-end gap-2 border-t border-slate-100 px-6 py-4 dark:border-slate-800">{acoes}</footer>}
+          <div className="px-4 py-5 sm:px-6">{children}</div>
+          {acoes && <footer className="flex flex-wrap justify-end gap-2 border-t border-slate-100 px-4 py-4 sm:px-6 dark:border-slate-800">{acoes}</footer>}
         </DialogPanel>
       </div>
     </Dialog>

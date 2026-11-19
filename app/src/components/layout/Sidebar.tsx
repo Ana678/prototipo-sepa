@@ -4,6 +4,8 @@ import logo from '../../assets/logo.png'
 import { NOMES_PERFIL, usePerfil } from '../../context/PerfilContext'
 import { atuanteLogado, fichasParaValidar, painelOutubro, supervisorLogado } from '../../data/mock'
 import { cn } from '../../lib/cn'
+import { useProntuarios } from '../../context/ProntuarioContext'
+import { NOMES_ATUANTES } from '../../data/prontuarios'
 import { semEnvio } from '../../features/registro/cruzamentoUsoSala'
 import { permissoesDaJanela } from '../../features/permissao/permissoes'
 import { ORIENTACAO_RECEPCAO } from '../../features/permissao/regraPermissao'
@@ -15,6 +17,7 @@ import {
   IconNadaConsta,
   IconPainel,
   IconPreencher,
+  IconProntuario,
   IconRelatorios,
   IconUsuarios,
   IconValidar,
@@ -46,11 +49,18 @@ const MENU: Record<Perfil, GrupoMenu[]> = {
       itens: [
         { para: '/fichas', rotulo: 'Minhas fichas', icone: IconFichas },
         { para: '/fichas/nova', rotulo: 'Preencher ficha do mês', icone: IconPreencher },
+        { para: '/prontuarios', rotulo: 'Meus prontuários', icone: IconProntuario },
       ],
     },
   ],
   supervisor: [
-    { titulo: 'Supervisão', itens: [{ para: '/validacao', rotulo: 'Validar fichas', icone: IconValidar, contador: fichasParaValidar.length }] },
+    {
+      titulo: 'Supervisão',
+      itens: [
+        { para: '/validacao', rotulo: 'Validar fichas', icone: IconValidar, contador: fichasParaValidar.length },
+        { para: '/validacao/prontuarios', rotulo: 'Prontuários', icone: IconProntuario },
+      ],
+    },
   ],
   registro: [
     {
@@ -120,6 +130,12 @@ export function Sidebar({ aberta, onFechar }: Props) {
 function ConteudoMenu({ onNavegar }: { onNavegar?: () => void }) {
   const { perfil } = usePerfil()
   const nome = USUARIO[perfil]
+  const { prontuarios } = useProntuarios()
+  // contadores que mudam durante o uso: devolvidos (aluno) e enviados para conferir (supervisor)
+  const dinamicos: Record<string, number> = {
+    '/prontuarios': prontuarios.filter((p) => p.atuanteId === atuanteLogado.id && p.status === 'devolvido').length,
+    '/validacao/prontuarios': prontuarios.filter((p) => p.atuanteId in NOMES_ATUANTES && p.status === 'aguardando_supervisor').length,
+  }
 
   return (
     <>
@@ -158,15 +174,15 @@ function ConteudoMenu({ onNavegar }: { onNavegar?: () => void }) {
                         />
                         <item.icone size={20} fill={isActive} className={isActive ? 'text-white' : 'text-sepa-200'} />
                         <span className="flex-1 truncate">{item.rotulo}</span>
-                        {!!item.contador && (
+                        {!!(dinamicos[item.para] ?? item.contador) && (
                           <span
                             className={cn(
                               'min-w-5 rounded-full px-1.5 py-0.5 text-center text-[11px] leading-none font-semibold tabular-nums',
                               isActive ? 'bg-white text-sepa-700' : 'bg-white/15 text-white',
                             )}
-                            aria-label={`${item.contador} pendentes`}
+                            aria-label={`${dinamicos[item.para] ?? item.contador} pendentes`}
                           >
-                            {item.contador}
+                            {dinamicos[item.para] ?? item.contador}
                           </span>
                         )}
                       </>

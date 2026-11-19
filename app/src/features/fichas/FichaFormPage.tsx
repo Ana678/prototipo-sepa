@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { StatusFichaBadge } from '../../components/ui/StatusBadge'
 import { IconAguardando } from '../../components/ui/icons'
+import { useProntuarios } from '../../context/ProntuarioContext'
 import { useToast } from '../../context/ToastContext'
 import { atuanteLogado, meusUsuariosIds, rascunhoNovembro, usuarios } from '../../data/mock'
 import { dataBR, limitesDoMes, nomeReferencia, prazoEnvio } from '../../lib/datas'
@@ -18,7 +19,11 @@ export function FichaFormPage() {
   const [justificativa, setJustificativa] = useState('')
 
   const meusUsuarios = usuarios.filter((u) => meusUsuariosIds.includes(u.id))
-  const erros = useMemo(() => validarFicha(ficha, semAtendimentos, justificativa), [ficha, semAtendimentos, justificativa])
+  const { daSessao } = useProntuarios()
+  const erros = useMemo(
+    () => validarFicha(ficha, semAtendimentos, justificativa, (u, d) => daSessao(atuanteLogado.id, u, d)),
+    [ficha, semAtendimentos, justificativa, daSessao],
+  )
   const atuante = atuanteLogado
 
   return (

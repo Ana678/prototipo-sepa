@@ -1,4 +1,4 @@
-import type { SituacaoSala, StatusFicha } from '../../types'
+import type { SituacaoSala, StatusFicha, StatusProntuario } from '../../types'
 import { cn } from '../../lib/cn'
 import { IconOk, IconAguardando, IconErro, IconAviso, IconNeutro, type IconeComponente } from './icons'
 
@@ -54,5 +54,17 @@ const SALA: Record<SituacaoSala, { tom: Tom; texto: string }> = {
 
 export function SituacaoSalaBadge({ situacao }: { situacao: SituacaoSala }) {
   const s = SALA[situacao]
+  return <Badge tom={s.tom}>{s.texto}</Badge>
+}
+
+export const PRONTUARIO: Record<StatusProntuario, { tom: Tom; texto: string }> = {
+  rascunho: { tom: 'neutro', texto: 'Rascunho' },
+  aguardando_supervisor: { tom: 'info', texto: 'Aguardando supervisor' },
+  devolvido: { tom: 'aviso', texto: 'Devolvido com comentário' },
+  validado: { tom: 'ok', texto: 'Validado' },
+}
+
+export function StatusProntuarioBadge({ status }: { status: StatusProntuario }) {
+  const s = PRONTUARIO[status]
   return <Badge tom={s.tom}>{s.texto}</Badge>
 }

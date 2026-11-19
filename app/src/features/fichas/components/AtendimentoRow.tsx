@@ -3,6 +3,10 @@ import { Input } from '../../../components/ui/Field'
 import { SelectMenu, type Opcao } from '../../../components/ui/SelectMenu'
 import { IconAlertaErro, Icon, IconRemover } from '../../../components/ui/icons'
 import { CalendarioSessoes } from './CalendarioSessoes'
+import { useProntuarios } from '../../../context/ProntuarioContext'
+import { atuanteLogado } from '../../../data/mock'
+import { ProntuarioModal } from '../../prontuarios/ProntuarioModal'
+import { ESTILO_SESSAO } from '../../prontuarios/estiloSessao'
 import { useConfirmar } from '../../../context/ConfirmContext'
 import { cn } from '../../../lib/cn'
 import { diaMes } from '../../../lib/datas'
@@ -37,6 +41,10 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
   const temErro = erros.length > 0
   const confirmar = useConfirmar()
   const nome = usuario?.nome ?? 'este usuário'
+  const { daSessao } = useProntuarios()
+  /** Data cuja janela de prontuário está aberta. */
+  const [prontuarioDia, setProntuarioDia] = useState<string | null>(null)
+  const prontuarioAberto = prontuarioDia ? daSessao(atuanteLogado.id, linha.usuarioId, prontuarioDia) : undefined
 
   async function removerData(i: number) {
     const d = linha.datas[i]
@@ -66,6 +74,8 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
   function adicionarData(valor: string) {
     if (!valor || linha.datas.includes(valor)) return
     onChange({ ...linha, datas: [...linha.datas, valor].sort() })
+    // a sessão não é só a data: já abre o prontuário dela
+    if (linha.usuarioId && !daSessao(atuanteLogado.id, linha.usuarioId, valor)) setProntuarioDia(valor)
   }
 
   return (
@@ -87,6 +97,8 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
         <div className="order-4 col-span-full flex flex-wrap items-center gap-1.5 md:order-none md:col-span-1">
           {linha.datas.map((d, i) => {
             const fora = d < limites.min || d > limites.max
+            const pr = linha.usuarioId ? daSessao(atuanteLogado.id, linha.usuarioId, d) : undefined
+            const est = ESTILO_SESSAO[pr?.status ?? 'sem']
             return (
               <span
                 key={`${d}-${i}`}
@@ -97,7 +109,17 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
                     : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
                 )}
               >
-                {diaMes(d)}
+                <button
+                  type="button"
+                  disabled={!linha.usuarioId}
+                  onClick={() => setProntuarioDia(d)}
+                  title={`${diaMes(d)}: ${est.texto}. Clique para abrir o prontuário.`}
+                  aria-label={`${diaMes(d)}, ${est.texto}. Abrir prontuário`}
+                  className="inline-flex items-center gap-1 rounded hover:underline"
+                >
+                  {!fora && <Icon nome={est.icone} size={14} className={est.cor} />}
+                  {diaMes(d)}
+                </button>
                 <button
                   type="button"
                   aria-label={`Remover ${diaMes(d)}`}
@@ -166,6 +188,16 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
           </p>
         ))}
       </div>
+      {prontuarioDia && (
+        <ProntuarioModal
+          key={prontuarioDia}
+          aberto
+          sessaoFixa
+          onFechar={() => setProntuarioDia(null)}
+          prontuario={prontuarioAberto}
+          inicial={{ usuarioId: linha.usuarioId, modalidade: linha.modalidade, data: prontuarioDia }}
+        />
+      )}
     </li>
   )
 }

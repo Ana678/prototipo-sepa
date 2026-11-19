@@ -4,6 +4,7 @@ import { Card } from '../../components/ui/Card'
 import { DataTable } from '../../components/ui/DataTable'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { StatusFichaBadge, SituacaoSalaBadge } from '../../components/ui/StatusBadge'
+import { useProntuarios } from '../../context/ProntuarioContext'
 import { atuanteLogado, minhasFichas } from '../../data/mock'
 import { dataBR, nomeReferencia, prazoEnvio } from '../../lib/datas'
 import { dataCurta, permissoesDaJanela } from '../permissao/permissoes'
@@ -18,6 +19,7 @@ const aVencer = minhasPendencias.filter((p) => !p.vencida)
 
 export function MinhasFichasPage() {
   const atual = minhasFichas[0]
+  const devolvidos = useProntuarios().prontuarios.filter((p) => p.atuanteId === atuanteLogado.id && p.status === 'devolvido')
 
   return (
     <>
@@ -33,6 +35,17 @@ export function MinhasFichasPage() {
           </Link>
         }
       />
+
+      {devolvidos.length > 0 && (
+        <div className="mb-4">
+          <Alert tom="aviso" titulo={devolvidos.length === 1 ? 'Prontuário devolvido com comentário' : `${devolvidos.length} prontuários devolvidos com comentário`}>
+            {atuanteLogado.supervisor} pediu correção. Corrija e reenvie para a sessão contar como conferida.{' '}
+            <Link to="/prontuarios" className="font-semibold underline underline-offset-2 hover:no-underline">
+              Ver prontuários
+            </Link>
+          </Alert>
+        </div>
+      )}
 
       {(vencidas.length > 0 || aVencer.length > 0) && (
         <div className="mb-4">

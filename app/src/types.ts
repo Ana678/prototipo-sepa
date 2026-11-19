@@ -118,3 +118,31 @@ export interface AtividadeColetiva {
   participacoes: number
   noEspacoSEPA: boolean
 }
+
+/**
+ * Prontuário de UMA sessão: data + usuário + anotações da consulta.
+ * Sigiloso: só quem atendeu e o supervisor dele leem o texto.
+ * Ciclo: rascunho → aguardando_supervisor → validado, ou devolvido (com comentário) → reenviado → …
+ */
+export type StatusProntuario = 'rascunho' | 'aguardando_supervisor' | 'devolvido' | 'validado'
+
+export interface EventoProntuario {
+  /** ISO date */
+  em: string
+  autor: string
+  acao: 'criado' | 'enviado' | 'devolvido' | 'reenviado' | 'validado'
+  /** Comentário do supervisor (devolução/validação) ou resposta do aluno (reenvio). */
+  comentario?: string
+}
+
+export interface Prontuario {
+  id: string
+  atuanteId: string
+  usuarioId: string
+  modalidade: Modalidade
+  /** ISO date da sessão */
+  data: string
+  texto: string
+  status: StatusProntuario
+  eventos: EventoProntuario[]
+}

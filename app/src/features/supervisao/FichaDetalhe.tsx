@@ -3,7 +3,11 @@ import { Button } from '../../components/ui/Button'
 import { Input, Label, Textarea } from '../../components/ui/Field'
 import { Icon, IconDevolver, IconOk } from '../../components/ui/icons'
 import { Badge } from '../../components/ui/StatusBadge'
-import { HOJE, type FichaParaValidar } from '../../data/mock'
+import { HOJE, usuarios, type FichaParaValidar } from '../../data/mock'
+import { useProntuarios } from '../../context/ProntuarioContext'
+import { ESTILO_SESSAO } from '../prontuarios/estiloSessao'
+import { RevisarProntuarioModal } from '../prontuarios/RevisarProntuarioModal'
+import type { Prontuario } from '../../types'
 import { cn } from '../../lib/cn'
 import { dataBR, nomeReferencia } from '../../lib/datas'
 import type { SituacaoMes } from '../../types'
@@ -30,7 +34,7 @@ const SELO: Partial<Record<SituacaoMes, 'info' | 'aviso' | 'ok'>> = {
 
 const janela = janelaVigente(HOJE)
 
-/** Substitui o e-mail "zero pendências": o supervisor confere com o SigSaúde e decide aqui. */
+/** Substitui o e-mail "zero pendências": o supervisor confere os prontuários de cada sessão e decide aqui. */
 export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
   const [modo, setModo] = useState<'ver' | 'devolver'>('ver')
   const [motivo, setMotivo] = useState('')
@@ -38,6 +42,13 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
   const [excecaoAte, setExcecaoAte] = useState('2026-11-21')
 
   const primeiroNome = ficha.atuante.nome.split(' ')[0]
+  const { daSessao } = useProntuarios()
+  const [lendo, setLendo] = useState<Prontuario | null>(null)
+  /** Prontuário de uma data da ficha ("dd/mm" + nome do usuário, como vem na ficha). */
+  const prontuarioDe = (usuario: string, dm: string) =>
+    daSessao(ficha.atuante.id, usuarios.find((u) => u.nome === usuario)?.id ?? usuario, `${ficha.referencia}-${dm.slice(0, 2)}`)
+  const todasDatas = ficha.linhas.flatMap((l) => l.datas.map((d) => prontuarioDe(l.usuario, d)))
+  const validados = todasDatas.filter((p) => p?.status === 'validado').length
   const bloqueioAuto = declaracaoDe(ficha.atuante.id).pendencias.some((p) => p.vencida)
   const totalSessoes = ficha.linhas.reduce((s, l) => s + l.datas.length, 0)
   const modalidades = [...new Set(ficha.linhas.map((l) => l.modalidade))]
@@ -68,8 +79,8 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
         <p className="flex items-center gap-2 rounded-lg bg-sepa-50 px-3 py-2 text-sm text-sepa-900 dark:bg-sepa-400/15 dark:text-sepa-100">
           <Icon nome="checklist" size={20} className="text-sepa-600 dark:text-sepa-300" />
           {ficha.linhas.length
-            ? 'Confira cada data com os prontuários no SigSaúde e com as retiradas de chave abaixo. Se tudo bater, valide.'
-            : 'Confira no SigSaúde que não houve atendimentos e leia a justificativa. Se tudo bater, valide.'}
+            ? `Cada data abre o prontuário da sessão (${validados} de ${todasDatas.length} já validados). Confira também as retiradas de chave abaixo. Se tudo bater, valide.`
+            : 'Sem sessões, não há prontuários. Leia a justificativa e confira as retiradas de chave. Se tudo bater, valide.'}
         </p>
 
         {ficha.linhas.length === 0 && (
@@ -103,11 +114,24 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
                     </div>
                     <div className="order-last w-full min-w-0 sm:order-none sm:w-auto sm:flex-1">
                       <div className="flex flex-wrap gap-1.5">
-                        {l.datas.map((d) => (
-                          <span key={d} className="rounded-md bg-slate-100 px-2 py-0.5 text-sm tabular-nums text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                            {d}
-                          </span>
-                        ))}
+                        {l.datas.map((d) => {
+                          const pr = prontuarioDe(l.usuario, d)
+                          const est = ESTILO_SESSAO[pr?.status ?? 'sem']
+                          return (
+                            <button
+                              key={d}
+                              type="button"
+                              disabled={!pr}
+                              onClick={() => pr && setLendo(pr)}
+                              title={`${d}: ${est.texto}`}
+                              aria-label={`${d}, ${est.texto}${pr ? '. Abrir prontuário' : ''}`}
+                              className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-sm tabular-nums text-slate-700 hover:bg-sepa-50 hover:text-sepa-800 disabled:cursor-default disabled:hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-sepa-900/60"
+                            >
+                              <Icon nome={est.icone} size={14} className={est.cor} />
+                              {d}
+                            </button>
+                          )
+                        })}
                       </div>
                       {l.observacao && <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{l.observacao}</p>}
                     </div>
@@ -127,7 +151,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
           <section className="space-y-4 rounded-xl border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-400/20 dark:bg-amber-400/5">
             <div>
               <Label htmlFor="motivo">O que precisa ser corrigido?</Label>
-              <Textarea id="motivo" rows={3} autoFocus value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: sessão de 16/10 não consta no SigSaúde." />
+              <Textarea id="motivo" rows={3} autoFocus value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: prontuário de 16/10 ainda não foi enviado." />
             </div>
 
             <fieldset>
@@ -199,6 +223,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
           )}
         </div>
       </footer>
+      {lendo && <RevisarProntuarioModal key={lendo.id} prontuario={lendo} onFechar={() => setLendo(null)} />}
     </div>
   )
 }

@@ -127,7 +127,7 @@ O `Relatório de Alinhamento de Escopo` tem afirmações que **as fontes do SEPA
 | "Retiramos qualquer premissa de criação de interfaces de entrada de dados primários" | A principal demanda da servidora (P8) é justamente a **ficha como formulário no sistema**, com validação. Os problemas 1, 2 e 5 só se resolvem na entrada do dado | **Rever.** Esta é a decisão mais importante |
 | "Prazo de **15 dias** para preenchimento e validação de prontuários" | Não aparece em nenhum documento do SEPA. O que existe é o prazo da ficha (dia 05) e a janela de permissão (dia 15 a dia 15) | Corrigir, ou confirmar com o SEPA de onde veio |
 | "Perda de vaga após **3 faltas consecutivas**" | A regra existe, mas o número não aparece em nenhuma fonte | Perguntar o número |
-| "Apenas criador e supervisor podem visualizar/editar antes da finalização" | Isso descreve o comportamento dos **prontuários do SigSaúde**, que não são nosso escopo | Reformular para a ficha: o aluno edita até enviar, e o supervisor valida |
+| "Apenas criador e supervisor podem visualizar/editar antes da finalização" | Vale para o **prontuário de cada sessão**, que passou a fazer parte do sistema (decisão do grupo): o aluno registra data, usuário e anotações; o supervisor valida ou devolve com comentário | Mantido. Rascunho só o aluno vê; Registro, Recepção e Gestão não leem o texto |
 | Dependência do SigSaúde para os relatórios | O Registro **não usa** dados do SigSaúde nos relatórios | Remover essa dependência |
 
 ### Dúvidas do nosso escopo que **já foram respondidas**

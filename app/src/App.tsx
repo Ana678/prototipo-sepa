@@ -9,6 +9,8 @@ import { NadaConstaPage } from './features/registro/NadaConstaPage'
 import { PainelMesPage } from './features/registro/PainelMesPage'
 import { UsuariosPage } from './features/registro/UsuariosPage'
 import { LiberacaoChavesPage } from './features/recepcao/LiberacaoChavesPage'
+import { MeusProntuariosPage } from './features/prontuarios/MeusProntuariosPage'
+import { ProntuariosSupervisaoPage } from './features/prontuarios/ProntuariosSupervisaoPage'
 import { RelatoriosPage } from './features/relatorios/RelatoriosPage'
 import { ValidacaoPage } from './features/supervisao/ValidacaoPage'
 
@@ -20,7 +22,9 @@ export default function App() {
         <Route index element={<Navigate to={HOME_PERFIL[perfil]} replace />} />
         <Route path="fichas" element={<MinhasFichasPage />} />
         <Route path="fichas/nova" element={<FichaFormPage />} />
+        <Route path="prontuarios" element={<MeusProntuariosPage />} />
         <Route path="validacao" element={<ValidacaoPage />} />
+        <Route path="validacao/prontuarios" element={<ProntuariosSupervisaoPage />} />
         <Route path="registro/painel" element={<PainelMesPage />} />
         <Route path="registro/usuarios" element={<UsuariosPage />} />
         <Route path="registro/atividades" element={<AtividadesPage />} />
