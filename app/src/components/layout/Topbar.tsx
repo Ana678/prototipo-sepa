@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { HOME_PERFIL, NOMES_PERFIL, usePerfil } from '../../context/PerfilContext'
 import { useTema } from '../../context/ThemeContext'
 import type { Perfil } from '../../types'
-import { IconModoClaro, IconModoEscuro, IconPainel, IconPerfil, IconPreencher, IconRelatorios, IconValidar } from '../ui/icons'
+import { IconChave, IconModoClaro, IconModoEscuro, IconPainel, IconPerfil, IconPreencher, IconRelatorios, IconValidar } from '../ui/icons'
 import { SelectMenu } from '../ui/SelectMenu'
 
 /** No protótipo, o perfil é trocado aqui. No sistema real ele virá do login (SIGAA / UFRN). */
@@ -22,7 +22,7 @@ export function Topbar() {
         Fichas de Atendimento e Relatórios
       </p>
       <div className="flex items-center gap-3">
-        <span className="rounded-md bg-amber-50 dark:bg-amber-950/50 px-2 py-1 text-xs font-medium text-amber-800 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-800">
+        <span className="rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
           Protótipo · dados fictícios
         </span>
         <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300">
@@ -31,13 +31,14 @@ export function Topbar() {
         <SelectMenu
           ariaLabel="Ver o sistema como"
           tamanho="sm"
-          className="w-72"
+          className="w-80"
           value={perfil}
           onChange={trocar}
           opcoes={[
             { valor: 'atuante', rotulo: NOMES_PERFIL.atuante, icone: IconPreencher },
             { valor: 'supervisor', rotulo: NOMES_PERFIL.supervisor, icone: IconValidar },
             { valor: 'registro', rotulo: NOMES_PERFIL.registro, icone: IconPainel },
+            { valor: 'recepcao', rotulo: NOMES_PERFIL.recepcao, icone: IconChave },
             { valor: 'gestao', rotulo: NOMES_PERFIL.gestao, icone: IconRelatorios },
           ]}
         />

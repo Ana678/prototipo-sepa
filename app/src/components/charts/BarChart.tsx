@@ -30,7 +30,7 @@ export function BarChart({ dados, unidade, mostrarPercentual = false }: Props) {
         return (
           <li
             key={d.rotulo}
-            className="group relative grid grid-cols-[8.5rem_1fr_5.5rem] items-center gap-3 rounded-md py-0.5"
+            className="group relative grid grid-cols-[11.5rem_1fr_5.5rem] items-center gap-3 rounded-md py-0.5"
             onMouseEnter={() => setAtivo(d.rotulo)}
             onMouseLeave={() => setAtivo(null)}
             onFocus={() => setAtivo(d.rotulo)}

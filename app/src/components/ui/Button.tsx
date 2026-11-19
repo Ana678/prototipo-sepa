@@ -1,18 +1,20 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes, Ref } from 'react'
 import { cn } from '../../lib/cn'
 
-type Variante = 'primario' | 'secundario' | 'fantasma' | 'perigo'
+type Variante = 'primario' | 'secundario' | 'fantasma' | 'perigo' | 'excluir'
 
 const estilos: Record<Variante, string> = {
   primario: 'bg-sepa-600 text-white hover:bg-sepa-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 dark:disabled:text-slate-400',
   secundario: 'border border-sepa-200 dark:border-sepa-700 bg-white dark:bg-slate-900 text-sepa-700 dark:text-sepa-200 hover:bg-sepa-50 dark:hover:bg-sepa-900/50 disabled:text-slate-400 dark:disabled:text-slate-500',
   fantasma: 'text-sepa-700 dark:text-sepa-200 hover:bg-sepa-50 dark:hover:bg-sepa-900/50',
+  excluir: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 focus-visible:outline-red-500',
   perigo: 'border border-red-200 dark:border-red-800 bg-white dark:bg-slate-900 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40',
 }
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variante?: Variante
   tamanho?: 'sm' | 'md'
+  ref?: Ref<HTMLButtonElement>
 }
 
 export function Button({ variante = 'primario', tamanho = 'md', className, ...rest }: Props) {

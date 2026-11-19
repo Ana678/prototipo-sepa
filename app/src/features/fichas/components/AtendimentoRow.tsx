@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Input } from '../../../components/ui/Field'
 import { SelectMenu, type Opcao } from '../../../components/ui/SelectMenu'
 import { IconAdicionar, IconAlertaErro, Icon, IconRemover } from '../../../components/ui/icons'
+import { useConfirmar } from '../../../context/ConfirmContext'
 import { cn } from '../../../lib/cn'
 import { diaMes } from '../../../lib/datas'
 import type { LinhaSessao, SituacaoMes, Usuario } from '../../../types'
@@ -34,6 +35,33 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
   const [adicionandoData, setAdicionandoData] = useState(false)
   const [editandoObs, setEditandoObs] = useState(false)
   const temErro = erros.length > 0
+  const confirmar = useConfirmar()
+  const nome = usuario?.nome ?? 'este usuário'
+
+  async function removerData(i: number) {
+    const d = linha.datas[i]
+    const ok = await confirmar({
+      titulo: 'Excluir data da sessão?',
+      mensagem: <>A sessão de <strong>{diaMes(d)}</strong> será retirada do registro de {nome} nesta ficha.</>,
+      confirmar: 'Excluir data',
+    })
+    if (ok) onChange({ ...linha, datas: linha.datas.filter((_, j) => j !== i) })
+  }
+
+  async function removerUsuario() {
+    const n = linha.datas.length
+    const ok = await confirmar({
+      titulo: 'Excluir usuário da ficha?',
+      mensagem: (
+        <>
+          <strong>{nome}</strong> ({linha.modalidade}) sai desta ficha
+          {n > 0 ? <>, junto com {n === 1 ? 'a sessão registrada' : `as ${n} sessões registradas`}</> : null}. O cadastro do usuário não é apagado.
+        </>
+      ),
+      confirmar: 'Excluir usuário',
+    })
+    if (ok) onRemover()
+  }
 
   function adicionarData(valor: string) {
     if (!valor) return
@@ -65,7 +93,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
                 className={cn(
                   'inline-flex items-center gap-1 rounded-md py-1 pr-1 pl-2 text-xs font-medium tabular-nums',
                   fora
-                    ? 'bg-red-100 text-red-800 ring-1 ring-red-300 ring-inset dark:bg-red-950/60 dark:text-red-300 dark:ring-red-700'
+                    ? 'bg-red-100 text-red-800 ring-1 ring-red-300 ring-inset dark:bg-red-400/10 dark:text-red-300 dark:ring-red-400/30'
                     : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
                 )}
               >
@@ -73,7 +101,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
                 <button
                   type="button"
                   aria-label={`Remover ${diaMes(d)}`}
-                  onClick={() => onChange({ ...linha, datas: linha.datas.filter((_, j) => j !== i) })}
+                  onClick={() => removerData(i)}
                   className="flex size-4 items-center justify-center rounded opacity-50 hover:bg-black/10 hover:opacity-100"
                 >
                   <Icon nome="close" size={14} />
@@ -121,7 +149,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
         {/* Remover (aparece no hover) */}
         <button
           type="button"
-          onClick={onRemover}
+          onClick={removerUsuario}
           aria-label="Remover usuário da ficha"
           className="flex size-8 items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-50 hover:text-red-700 focus:opacity-100 dark:hover:bg-red-950/40 dark:hover:text-red-400"
         >

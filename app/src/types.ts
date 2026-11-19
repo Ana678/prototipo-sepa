@@ -1,4 +1,4 @@
-export type Perfil = 'atuante' | 'supervisor' | 'registro' | 'gestao'
+export type Perfil = 'atuante' | 'supervisor' | 'registro' | 'recepcao' | 'gestao'
 
 export type VinculoAtuante = '4º ano' | '5º ano' | 'Extensão' | 'Pós-graduação' | 'Técnico'
 
@@ -22,8 +22,11 @@ export type StatusFicha =
   | 'devolvida'
   | 'atrasada'
 
-/** Situação do atuante para uso de salas na janela dia 15 → dia 15 (dado consumido pelo módulo de Reserva de Salas). */
-export type SituacaoSala = 'liberado' | 'bloqueado' | 'excecao'
+/**
+ * Situação da PESSOA para uso de salas e retirada de chave na janela dia 15 → dia 15.
+ * Calculada em `features/permissao/regraPermissao.ts` — nunca gravada à mão.
+ */
+export type SituacaoSala = 'liberado' | 'excecao' | 'aguardando' | 'bloqueado'
 
 export const DESFECHOS = [
   'Em atendimento',
@@ -101,6 +104,7 @@ export type CategoriaAtividade =
   | 'Supervisão de Estágio'
   | 'Grupo'
   | 'Ações de Promoção em Saúde'
+  | 'Representação do SEPA'
   | 'Projeto Interações (fora do SEPA)'
 
 export interface AtividadeColetiva {
@@ -109,6 +113,8 @@ export interface AtividadeColetiva {
   titulo: string
   categoria: CategoriaAtividade
   projeto?: string
+  /** Só para supervisões: quem conduziu (alimenta o relatório de Supervisões). */
+  supervisor?: string
   participacoes: number
   noEspacoSEPA: boolean
 }

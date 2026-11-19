@@ -4,9 +4,11 @@ import { HOME_PERFIL, usePerfil } from './context/PerfilContext'
 import { FichaFormPage } from './features/fichas/FichaFormPage'
 import { MinhasFichasPage } from './features/fichas/MinhasFichasPage'
 import { AtividadesPage } from './features/registro/AtividadesPage'
+import { FichaRegistroPage } from './features/registro/FichaRegistroPage'
 import { NadaConstaPage } from './features/registro/NadaConstaPage'
 import { PainelMesPage } from './features/registro/PainelMesPage'
 import { UsuariosPage } from './features/registro/UsuariosPage'
+import { LiberacaoChavesPage } from './features/recepcao/LiberacaoChavesPage'
 import { RelatoriosPage } from './features/relatorios/RelatoriosPage'
 import { ValidacaoPage } from './features/supervisao/ValidacaoPage'
 
@@ -23,6 +25,8 @@ export default function App() {
         <Route path="registro/usuarios" element={<UsuariosPage />} />
         <Route path="registro/atividades" element={<AtividadesPage />} />
         <Route path="registro/nada-consta" element={<NadaConstaPage />} />
+        <Route path="registro/fichas/:atuanteId/:referencia" element={<FichaRegistroPage />} />
+        <Route path="recepcao" element={<LiberacaoChavesPage />} />
         <Route path="relatorios" element={<RelatoriosPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

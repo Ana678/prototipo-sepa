@@ -7,11 +7,11 @@ import type {
   Atuante,
   FichaMensal,
   Modalidade,
-  SituacaoSala,
+  SituacaoMes,
   StatusFicha,
   Usuario,
-  VinculoUFRN,
 } from '../types'
+import type { ExcecaoSupervisor } from '../features/permissao/regraPermissao'
 
 /** "Hoje" fixo do protótipo, para os prazos ficarem coerentes. */
 export const HOJE = '2026-11-18'
@@ -24,6 +24,9 @@ export const atuanteLogado: Atuante = {
 }
 
 export const supervisorLogado = { nome: 'Profa. Helena Duarte' }
+
+/** Supervisores de campo (fictícios). */
+export const supervisores = ['Profa. Helena Duarte', 'Prof. Renato Sales', 'Profa. Sílvia Moura', 'Prof. Daniel Freitas']
 
 export const usuarios: Usuario[] = [
   { id: 'u1', nome: 'Marcos A. Ferreira', cpf: '***.412.880-**', vinculoUFRN: 'Aluno', curso: 'Engenharia Civil', modalidades: ['Psicoterapia'], primeiroAtendimento: '2025-08-12', desfecho1: 'Em atendimento' },
@@ -67,8 +70,9 @@ export interface FichaParaValidar {
   atuante: Atuante
   referencia: string
   enviadaEm: string
-  linhas: { usuario: string; modalidade: Modalidade; datas: string[] }[]
-  movimentacoes: string[]
+  linhas: { usuario: string; modalidade: Modalidade; datas: string[]; situacao: SituacaoMes; observacao?: string }[]
+  /** Obrigatória quando a ficha vem sem atendimentos. */
+  justificativa?: string
 }
 
 export const fichasParaValidar: FichaParaValidar[] = [
@@ -77,11 +81,10 @@ export const fichasParaValidar: FichaParaValidar[] = [
     atuante: atuanteLogado,
     referencia: '2026-10',
     enviadaEm: '2026-11-04',
-    movimentacoes: ['Início de atendimento: Rafael T. Nunes'],
     linhas: [
-      { usuario: 'Marcos A. Ferreira', modalidade: 'Psicoterapia', datas: ['06/10', '13/10', '20/10', '27/10'] },
-      { usuario: 'Luana P. Costa', modalidade: 'Psicoterapia', datas: ['01/10', '08/10', '15/10', '22/10', '29/10'] },
-      { usuario: 'Rafael T. Nunes', modalidade: 'Psicoterapia', datas: ['02/10', '09/10', '16/10', '23/10', '30/10'] },
+      { usuario: 'Marcos A. Ferreira', modalidade: 'Psicoterapia', datas: ['06/10', '13/10', '20/10', '27/10'], situacao: 'Segue em atendimento' },
+      { usuario: 'Luana P. Costa', modalidade: 'Psicoterapia', datas: ['01/10', '08/10', '15/10', '22/10', '29/10'], situacao: 'Segue em atendimento' },
+      { usuario: 'Rafael T. Nunes', modalidade: 'Psicoterapia', datas: ['02/10', '09/10', '16/10', '23/10', '30/10'], situacao: 'Iniciou neste mês' },
     ],
   },
   {
@@ -89,10 +92,9 @@ export const fichasParaValidar: FichaParaValidar[] = [
     atuante: { id: 'a2', nome: 'Caio Medeiros', vinculo: '5º ano', supervisor: 'Profa. Helena Duarte' },
     referencia: '2026-10',
     enviadaEm: '2026-11-05',
-    movimentacoes: ['Encerramento / Alta: Joana S. Melo'],
     linhas: [
-      { usuario: 'Pedro H. Alves', modalidade: 'Psicoterapia', datas: ['07/10', '14/10', '21/10', '28/10'] },
-      { usuario: 'Joana S. Melo', modalidade: 'Psicopedagogia', datas: ['03/10', '10/10'] },
+      { usuario: 'Pedro H. Alves', modalidade: 'Psicoterapia', datas: ['07/10', '14/10', '21/10', '28/10'], situacao: 'Segue em atendimento' },
+      { usuario: 'Joana S. Melo', modalidade: 'Psicopedagogia', datas: ['03/10', '10/10'], situacao: 'Alta / encerramento', observacao: 'Objetivos do acompanhamento atingidos.' },
     ],
   },
   {
@@ -100,71 +102,224 @@ export const fichasParaValidar: FichaParaValidar[] = [
     atuante: { id: 'a3', nome: 'Larissa Queiroz', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' },
     referencia: '2026-10',
     enviadaEm: '2026-11-02',
-    movimentacoes: [],
-    linhas: [{ usuario: 'Carla M. Rocha', modalidade: 'Plantão Psicológico', datas: ['15/10', '22/10'] }],
+    linhas: [{ usuario: 'Carla M. Rocha', modalidade: 'Plantão Psicológico', datas: ['15/10', '22/10'], situacao: 'Encaminhado', observacao: 'Encaminhada para Psicoterapia (lista de espera).' }],
+  },
+  {
+    // Caso regular sem chave: não atendeu, não retirou chave, enviou a ficha no prazo com justificativa.
+    id: 'v4',
+    atuante: { id: 'a11', nome: 'Tânia Coelho', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' },
+    referencia: '2026-10',
+    enviadaEm: '2026-11-03',
+    linhas: [],
+    justificativa: 'Sem atendimentos em outubro: aguardando novos encaminhamentos do plantão. Participei das supervisões semanais.',
   },
 ]
 
+/** Uma linha por FICHA (pessoa + vínculo). Quem tem dois vínculos aparece duas vezes. */
 export interface LinhaPainel {
   atuante: Atuante
   status: StatusFicha | 'nao_enviada'
   enviadaEm?: string
-  sala: SituacaoSala
+  /** Datas (dd/mm) com atendimento lançado na ficha — enviada ou em rascunho. */
+  datasFicha?: string[]
+  /** Sessões lançadas (útil quando a ficha ainda está em rascunho). */
+  sessoes?: number
+  /** Pedido do supervisor para não bloquear apesar da pendência. */
+  excecao?: ExcecaoSupervisor
   observacao?: string
 }
 
+const datasDe = (id: string) => [...new Set(fichasParaValidar.find((f) => f.atuante.id === id)?.linhas.flatMap((l) => l.datas) ?? [])]
+
+const livia = { id: 'a9', nome: 'Lívia Torres', supervisor: 'Profa. Sílvia Moura' }
+
 export const painelOutubro: LinhaPainel[] = [
-  { atuante: atuanteLogado, status: 'aguardando_supervisor', enviadaEm: '04/11', sala: 'liberado' },
-  { atuante: { id: 'a2', nome: 'Caio Medeiros', vinculo: '5º ano', supervisor: 'Profa. Helena Duarte' }, status: 'aguardando_supervisor', enviadaEm: '05/11', sala: 'liberado' },
-  { atuante: { id: 'a3', nome: 'Larissa Queiroz', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' }, status: 'validada', enviadaEm: '02/11', sala: 'liberado' },
-  { atuante: { id: 'a4', nome: 'Gustavo Pires', vinculo: '4º ano', supervisor: 'Prof. Renato Sales' }, status: 'nao_enviada', sala: 'bloqueado' },
-  { atuante: { id: 'a5', nome: 'Isabela Freire', vinculo: 'Extensão', supervisor: 'Prof. Renato Sales', projeto: 'Projeto Acolher' }, status: 'devolvida', enviadaEm: '03/11', sala: 'excecao', observacao: 'Supervisor pediu para não bloquear: correção combinada até 20/11.' },
-  { atuante: { id: 'a6', nome: 'Mateus Araújo', vinculo: 'Técnico', supervisor: '—' }, status: 'validada', enviadaEm: '01/11', sala: 'liberado' },
-  { atuante: { id: 'a7', nome: 'Renata Vasconcelos', vinculo: '5º ano', supervisor: 'Profa. Sílvia Moura' }, status: 'atrasada', sala: 'bloqueado' },
-  { atuante: { id: 'a8', nome: 'Felipe Cardoso', vinculo: 'Extensão', supervisor: 'Profa. Sílvia Moura', projeto: 'Grupo Enfrentamento à Timidez' }, status: 'validada', enviadaEm: '05/11', sala: 'liberado' },
+  { atuante: atuanteLogado, status: 'aguardando_supervisor', enviadaEm: '04/11', datasFicha: datasDe('a1'), sessoes: 14 },
+  { atuante: { id: 'a2', nome: 'Caio Medeiros', vinculo: '5º ano', supervisor: 'Profa. Helena Duarte' }, status: 'aguardando_supervisor', enviadaEm: '05/11', datasFicha: datasDe('a2'), sessoes: 6 },
+  { atuante: { id: 'a3', nome: 'Larissa Queiroz', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' }, status: 'aguardando_supervisor', enviadaEm: '02/11', datasFicha: datasDe('a3'), sessoes: 2 },
+  { atuante: { id: 'a4', nome: 'Gustavo Pires', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' }, status: 'nao_enviada' },
+  {
+    atuante: { id: 'a5', nome: 'Isabela Freire', vinculo: 'Extensão', supervisor: 'Prof. Renato Sales', projeto: 'Projeto Acolher' },
+    status: 'devolvida',
+    enviadaEm: '03/11',
+    datasFicha: ['07/10', '14/10', '21/10'],
+    sessoes: 6,
+    excecao: { ate: '2026-11-20', motivo: 'Correção combinada com o supervisor até 20/11.' },
+    observacao: 'Supervisor pediu para não bloquear: correção combinada até 20/11.',
+  },
+  { atuante: { id: 'a6', nome: 'Mateus Araújo', vinculo: 'Técnico', supervisor: '—' }, status: 'validada', enviadaEm: '01/11', datasFicha: ['05/10', '19/10'], sessoes: 4 },
+  {
+    atuante: { id: 'a7', nome: 'Renata Vasconcelos', vinculo: '5º ano', supervisor: 'Profa. Helena Duarte' },
+    status: 'rascunho',
+    datasFicha: ['02/10', '06/10', '09/10', '13/10', '16/10', '20/10', '23/10'],
+    sessoes: 9,
+  },
+  { atuante: { id: 'a8', nome: 'Felipe Cardoso', vinculo: 'Extensão', supervisor: 'Profa. Sílvia Moura', projeto: 'Grupo Enfrentamento à Timidez' }, status: 'validada', enviadaEm: '05/11', datasFicha: ['01/10', '08/10', '15/10', '22/10', '29/10'], sessoes: 5 },
+  { atuante: { ...livia, vinculo: '4º ano' }, status: 'validada', enviadaEm: '03/11', datasFicha: ['06/10', '20/10'], sessoes: 4 },
+  {
+    atuante: { ...livia, vinculo: 'Extensão', supervisor: 'Prof. Renato Sales', projeto: 'Projeto Acolher' },
+    status: 'devolvida',
+    enviadaEm: '04/11',
+    datasFicha: ['09/10', '23/10'],
+    sessoes: 2,
+    observacao: 'Duplo vínculo: a pendência na extensão bloqueia também o estágio.',
+  },
+  { atuante: { id: 'a11', nome: 'Tânia Coelho', vinculo: '4º ano', supervisor: 'Profa. Helena Duarte' }, status: 'aguardando_supervisor', enviadaEm: '03/11', datasFicha: [], sessoes: 0 },
+  {
+    atuante: { id: 'a10', nome: 'Otávio Rezende', vinculo: '5º ano', supervisor: 'Profa. Helena Duarte' },
+    status: 'nao_enviada',
+    observacao: 'Não retirou chave em outubro: ficha pendente, mas sem bloqueio.',
+  },
 ]
 
+/**
+ * Retiradas de chave — VIRIAM DO MÓDULO DE RESERVA DE SALAS (outro grupo).
+ * Só pessoa, data e sala: nada de usuário atendido. Dados fictícios.
+ */
+export interface UsoSala {
+  atuanteId: string
+  data: string // ISO yyyy-mm-dd
+  sala: string
+}
+
+const usos = (atuanteId: string, sala: string, dias: string[]): UsoSala[] =>
+  dias.map((d) => ({ atuanteId, sala, data: `2026-${d.slice(3, 5)}-${d.slice(0, 2)}` }))
+
+export const usosDeSala: UsoSala[] = [
+  // Beatriz: tudo declarado, exceto 14/11 (ainda dentro dos 15 dias)
+  ...usos('a1', 'Sala 3', ['01/10', '06/10', '08/10', '13/10', '20/10', '27/10', '03/11', '05/11', '10/11', '12/11', '13/11', '14/11', '17/11']),
+  // Caio: outubro ok; 10/11 sem declarar (bloqueia em 25/11)
+  ...usos('a2', 'Sala 5', ['07/10', '14/10', '21/10', '28/10', '04/11', '10/11']),
+  // Larissa: declarou 15 e 22/10, mas não 08 e 29/10 → passou de 15 dias, bloqueio automático
+  ...usos('a3', 'Acolhimento 1', ['08/10', '15/10', '22/10', '29/10']),
+  ...usos('a4', 'Sala 2', ['07/10', '14/10', '21/10', '28/10']),
+  ...usos('a5', 'Ludoterapia 1', ['07/10', '14/10', '21/10']),
+  ...usos('a6', 'Sala 7', ['05/10', '19/10', '02/11', '16/11']),
+  ...usos('a7', 'Sala 4', ['02/10', '09/10', '16/10', '27/10']),
+  ...usos('a8', 'Sala de grupo', ['01/10', '08/10', '15/10', '22/10', '29/10', '05/11', '12/11']),
+  ...usos('a9', 'Sala 6', ['06/10', '09/10', '20/10']),
+]
+
+/** Datas já declaradas na ficha de NOVEMBRO (rascunho em andamento), por pessoa. */
+export const declaradasNovembro: Record<string, string[]> = {
+  a1: [...new Set(rascunhoNovembro.sessoes.flatMap((s) => s.datas))],
+  a2: ['2026-11-04', '2026-11-10'],
+  a6: ['2026-11-02', '2026-11-16'],
+  a8: ['2026-11-05', '2026-11-12'],
+}
+
+/** Pendência que impede o Nada Consta. `ficha` é resolvida dentro da plataforma; `sigsaude` fica fora dela. */
+export type Pendencia =
+  | { tipo: 'ficha'; atuanteId: string; referencia: string; situacao: 'rascunho' | 'nao_enviada' | 'devolvida' }
+  | { tipo: 'sigsaude'; descricao: string; ondeProcurar: string }
+
 export interface HistoricoNadaConsta {
+  atuanteId: string
   nome: string
   matricula: string
-  anos: { ano: number; vinculo: string; fichasPendentes: number; sigSaudePendente: boolean; obs?: string }[]
+  anos: { ano: number; vinculo: string; pendencias: Pendencia[] }[]
   inseridoSIPAC: boolean
 }
 
 export const historicoNadaConsta: HistoricoNadaConsta[] = [
   {
+    atuanteId: 'a1',
     nome: 'Beatriz Lima',
     matricula: '2021******',
     inseridoSIPAC: false,
     anos: [
-      { ano: 2025, vinculo: '4º ano', fichasPendentes: 0, sigSaudePendente: false },
-      { ano: 2026, vinculo: '5º ano', fichasPendentes: 1, sigSaudePendente: false, obs: 'Ficha de novembro ainda em rascunho.' },
+      { ano: 2025, vinculo: '4º ano', pendencias: [] },
+      { ano: 2026, vinculo: '5º ano', pendencias: [{ tipo: 'ficha', atuanteId: 'a1', referencia: '2026-11', situacao: 'rascunho' }] },
     ],
   },
   {
+    atuanteId: 'a2',
     nome: 'Caio Medeiros',
     matricula: '2021******',
     inseridoSIPAC: true,
     anos: [
-      { ano: 2024, vinculo: 'Extensão — Projeto Acolher', fichasPendentes: 0, sigSaudePendente: false },
-      { ano: 2025, vinculo: '4º ano', fichasPendentes: 0, sigSaudePendente: false },
-      { ano: 2026, vinculo: '5º ano', fichasPendentes: 0, sigSaudePendente: false },
+      { ano: 2024, vinculo: 'Extensão — Projeto Acolher', pendencias: [] },
+      { ano: 2025, vinculo: '4º ano', pendencias: [] },
+      { ano: 2026, vinculo: '5º ano', pendencias: [] },
     ],
   },
   {
+    atuanteId: 'a4',
     nome: 'Gustavo Pires',
     matricula: '2022******',
     inseridoSIPAC: false,
     anos: [
-      { ano: 2025, vinculo: 'Extensão — Interações', fichasPendentes: 0, sigSaudePendente: true, obs: 'Prontuário de 12/06/2025 não finalizado no SigSaúde.' },
-      { ano: 2026, vinculo: '4º ano', fichasPendentes: 2, sigSaudePendente: false },
+      {
+        ano: 2025,
+        vinculo: 'Extensão — Interações',
+        pendencias: [{ tipo: 'sigsaude', descricao: 'Prontuário não finalizado', ondeProcurar: 'Prontuário do atendimento de 12/06/2025 (Psicoterapia)' }],
+      },
+      {
+        ano: 2026,
+        vinculo: '4º ano',
+        pendencias: [
+          { tipo: 'ficha', atuanteId: 'a4', referencia: '2026-09', situacao: 'devolvida' },
+          { tipo: 'ficha', atuanteId: 'a4', referencia: '2026-10', situacao: 'nao_enviada' },
+        ],
+      },
     ],
   },
 ]
 
+/* ---------- Ficha vista pelo Registro (aberta a partir do Nada Consta ou do Painel) ---------- */
+
+export interface EventoFicha {
+  data: string
+  texto: string
+  detalhe?: string
+}
+
+export interface FichaRegistro {
+  atuanteId: string
+  referencia: string
+  status: 'rascunho' | 'aguardando_supervisor' | 'validada' | 'devolvida' | 'atrasada' | 'nao_enviada'
+  sessoes: number
+  usuarios: number
+  eventos: EventoFicha[]
+}
+
+const fichasRegistro: FichaRegistro[] = [
+  {
+    atuanteId: 'a1', referencia: '2026-11', status: 'rascunho', sessoes: 9, usuarios: 5,
+    eventos: [{ data: '2026-11-03', texto: 'Ficha iniciada (rascunho)' }, { data: '2026-11-17', texto: 'Última edição do rascunho' }],
+  },
+  {
+    atuanteId: 'a4', referencia: '2026-09', status: 'devolvida', sessoes: 11, usuarios: 4,
+    eventos: [
+      { data: '2026-10-05', texto: 'Enviada ao supervisor' },
+      { data: '2026-10-08', texto: 'Devolvida pelo supervisor', detalhe: 'Sessões de 15/09 e 22/09 não constam no SigSaúde.' },
+    ],
+  },
+  { atuanteId: 'a4', referencia: '2026-10', status: 'nao_enviada', sessoes: 0, usuarios: 0, eventos: [{ data: '2026-11-03', texto: 'Lembrete automático enviado' }] },
+]
+
+const ATUANTES_EXTRAS: Atuante[] = painelOutubro.map((l) => l.atuante)
+
+export function obterFichaRegistro(atuanteId: string, referencia: string): { ficha: FichaRegistro; atuante: Atuante } | null {
+  const atuante = ATUANTES_EXTRAS.find((a) => a.id === atuanteId)
+  if (!atuante) return null
+  const ficha = fichasRegistro.find((f) => f.atuanteId === atuanteId && f.referencia === referencia)
+  if (ficha) return { ficha, atuante }
+  // fichas de outubro sem histórico detalhado: monta a partir do painel
+  const linha = painelOutubro.find((l) => l.atuante.id === atuanteId)
+  if (!linha || referencia !== '2026-10') return null
+  return {
+    atuante,
+    ficha: {
+      atuanteId, referencia, status: linha.status, sessoes: linha.sessoes ?? 0, usuarios: linha.sessoes ? 4 : 0,
+      eventos: linha.enviadaEm ? [{ data: `2026-11-${linha.enviadaEm.slice(0, 2)}`, texto: 'Enviada ao supervisor' }] : [],
+    },
+  }
+}
+
 export const atividades: AtividadeColetiva[] = [
   { id: 'at1', data: '2026-11-12', titulo: 'Reunião ordinária da equipe', categoria: 'Atividade Interna do Serviço', participacoes: 18, noEspacoSEPA: true },
-  { id: 'at2', data: '2026-11-11', titulo: 'Supervisão de estágio — 5º ano', categoria: 'Supervisão de Estágio', participacoes: 7, noEspacoSEPA: true },
+  { id: 'at2', data: '2026-11-11', titulo: 'Supervisão de estágio — 5º ano', categoria: 'Supervisão de Estágio', supervisor: 'Profa. Helena Duarte', participacoes: 7, noEspacoSEPA: true },
   { id: 'at3', data: '2026-11-10', titulo: 'Grupo Enfrentamento à Timidez — encontro 6', categoria: 'Grupo', projeto: 'Grupo Enfrentamento à Timidez', participacoes: 9, noEspacoSEPA: true },
   { id: 'at4', data: '2026-11-07', titulo: 'Roda de conversa em escola municipal', categoria: 'Projeto Interações (fora do SEPA)', projeto: 'Interações-Psi', participacoes: 42, noEspacoSEPA: false },
   { id: 'at5', data: '2026-11-05', titulo: 'Formação do Projeto Acolher', categoria: 'Ações Formativas', projeto: 'Projeto Acolher', participacoes: 14, noEspacoSEPA: true },
@@ -172,37 +327,3 @@ export const atividades: AtividadeColetiva[] = [
 
 /* ---------- Relatórios (exemplo baseado nos totais do Relatório de Gestão 2025) ---------- */
 
-export const relatorio = {
-  ano: 2025,
-  usuariosUnicos: 394,
-  atendimentos: 4220,
-  atividadesColetivas: 309,
-  participacoes: 2075,
-  porQtdModalidades: [
-    { rotulo: 'Em 1 modalidade', valor: 366 },
-    { rotulo: 'Em 2 modalidades', valor: 25 },
-    { rotulo: 'Em 3 modalidades', valor: 3 },
-  ],
-  atendimentosPorModalidade: [
-    { rotulo: 'Psicoterapia', valor: 3030 },
-    { rotulo: 'Neuropsicologia', valor: 420 },
-    { rotulo: 'Acolhimento', valor: 310 },
-    { rotulo: 'Psicopedagogia', valor: 260 },
-    { rotulo: 'Grupo', valor: 200 },
-  ],
-  usuariosPorModalidadeVinculo: [
-    { modalidade: 'Acolhimento', valores: { Externo: 80, Aluno: 39, Servidor: 3, Terceirizado: 2, 'Não identificado': 2 } },
-    { modalidade: 'Psicoterapia', valores: { Externo: 107, Aluno: 64, Servidor: 0, Terceirizado: 2, 'Não identificado': 1 } },
-    { modalidade: 'Neuropsicologia', valores: { Externo: 32, Aluno: 13, Servidor: 0, Terceirizado: 0, 'Não identificado': 3 } },
-    { modalidade: 'Psicopedagogia', valores: { Externo: 13, Aluno: 3, Servidor: 0, Terceirizado: 0, 'Não identificado': 0 } },
-    { modalidade: 'Grupo', valores: { Externo: 25, Aluno: 16, Servidor: 4, Terceirizado: 0, 'Não identificado': 10 } },
-  ] as { modalidade: string; valores: Record<VinculoUFRN, number> }[],
-  alunosPorCentro: [
-    { rotulo: 'CCHLA', valor: 41 },
-    { rotulo: 'CT', valor: 22 },
-    { rotulo: 'CCSA', valor: 17 },
-    { rotulo: 'CB', valor: 12 },
-    { rotulo: 'IMD', valor: 9 },
-    { rotulo: 'Outros', valor: 14 },
-  ],
-}

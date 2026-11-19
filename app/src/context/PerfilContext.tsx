@@ -12,6 +12,7 @@ export const NOMES_PERFIL: Record<Perfil, string> = {
   atuante: 'Estagiário / Extensionista / Técnico',
   supervisor: 'Supervisor de campo',
   registro: 'Setor de Registro',
+  recepcao: 'Recepção',
   gestao: 'Gestão (Direção)',
 }
 
@@ -20,6 +21,7 @@ export const HOME_PERFIL: Record<Perfil, string> = {
   atuante: '/fichas',
   supervisor: '/validacao',
   registro: '/registro/painel',
+  recepcao: '/recepcao',
   gestao: '/relatorios',
 }
 
@@ -27,6 +29,7 @@ export const HOME_PERFIL: Record<Perfil, string> = {
 function perfilPelaRota(caminho: string): Perfil {
   if (caminho.startsWith('/validacao')) return 'supervisor'
   if (caminho.startsWith('/registro')) return 'registro'
+  if (caminho.startsWith('/recepcao')) return 'recepcao'
   if (caminho.startsWith('/relatorios')) return 'gestao'
   return 'atuante'
 }

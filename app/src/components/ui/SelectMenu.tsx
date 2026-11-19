@@ -28,16 +28,16 @@ interface Props<T extends string> {
 
 const TOM_BOTAO: Record<TomOpcao, string> = {
   neutro: '',
-  info: 'border-sepa-300 bg-sepa-50 text-sepa-800 dark:border-sepa-600 dark:bg-sepa-900/50 dark:text-sepa-100',
-  aviso: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-200',
-  ok: 'border-emerald-300 bg-emerald-50 text-emerald-900 dark:border-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200',
+  info: 'border-sepa-300 bg-sepa-50 text-sepa-800 dark:border-sepa-300/30 dark:bg-sepa-300/10 dark:text-sepa-100',
+  aviso: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200',
+  ok: 'border-emerald-300 bg-emerald-50 text-emerald-900 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-200',
 }
 
 const TOM_PONTO: Record<TomOpcao, string> = {
   neutro: 'bg-slate-300 dark:bg-slate-600',
   info: 'bg-sepa-500 dark:bg-sepa-300',
-  aviso: 'bg-amber-500',
-  ok: 'bg-emerald-500',
+  aviso: 'bg-amber-500 dark:bg-amber-400',
+  ok: 'bg-emerald-500 dark:bg-emerald-400',
 }
 
 /**

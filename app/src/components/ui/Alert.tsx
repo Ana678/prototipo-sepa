@@ -3,10 +3,10 @@ import { cn } from '../../lib/cn'
 import { IconOk, IconAlertaErro, IconAviso, IconInfo } from './icons'
 
 const tons = {
-  info: 'border-sepa-200 dark:border-sepa-700 bg-sepa-50 dark:bg-sepa-900/50 text-sepa-900 dark:text-sepa-100',
-  aviso: 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-200',
-  erro: 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 text-red-900 dark:text-red-200',
-  ok: 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200',
+  info: 'border-sepa-200 bg-sepa-50 text-sepa-900 dark:border-sepa-300/25 dark:bg-sepa-400/15 dark:text-sepa-100',
+  aviso: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-100',
+  erro: 'border-red-200 bg-red-50 text-red-900 dark:border-red-400/20 dark:bg-red-400/10 dark:text-red-100',
+  ok: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-100',
 }
 
 const icones = { info: IconInfo, aviso: IconAviso, erro: IconAlertaErro, ok: IconOk }

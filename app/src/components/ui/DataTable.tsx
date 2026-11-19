@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { cn } from '../../lib/cn'
+import { Pagination } from './Pagination'
 
 export interface Coluna<T> {
   chave: string
@@ -13,10 +14,22 @@ interface Props<T> {
   linhas: T[]
   chaveLinha: (linha: T) => string
   vazio?: string
+  /** Linhas por página. `false` desliga a paginação. Padrão: 10. */
+  porPagina?: number | false
 }
 
-export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum registro.' }: Props<T>) {
+export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum registro.', porPagina: porPaginaInicial = 10 }: Props<T>) {
+  const paginar = porPaginaInicial !== false
+  const [porPagina, setPorPagina] = useState(porPaginaInicial || 10)
+  const [paginaPedida, setPagina] = useState(1)
+
+  // se um filtro reduzir a lista, a página atual nunca fica além da última
+  const totalPaginas = Math.max(1, Math.ceil(linhas.length / porPagina))
+  const pagina = Math.min(paginaPedida, totalPaginas)
+  const visiveis = paginar ? linhas.slice((pagina - 1) * porPagina, pagina * porPagina) : linhas
+
   return (
+    <div>
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead>
@@ -36,7 +49,7 @@ export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum regi
               </td>
             </tr>
           )}
-          {linhas.map((l) => (
+          {visiveis.map((l) => (
             <tr key={chaveLinha(l)} className="border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/60">
               {colunas.map((c) => (
                 <td key={c.chave} className={cn('px-3 py-2.5 align-top', c.alinhar === 'direita' && 'text-right tabular-nums')}>
@@ -47,6 +60,19 @@ export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum regi
           ))}
         </tbody>
       </table>
+    </div>
+      {paginar && linhas.length > 0 && (
+        <Pagination
+          pagina={pagina}
+          totalItens={linhas.length}
+          porPagina={porPagina}
+          onPagina={setPagina}
+          onPorPagina={(n) => {
+            setPorPagina(n)
+            setPagina(1)
+          }}
+        />
+      )}
     </div>
   )
 }
