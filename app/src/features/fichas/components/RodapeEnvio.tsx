@@ -15,7 +15,7 @@ export function RodapeEnvio({ erros, supervisor, onSalvar, onEnviar }: Props) {
   const ok = erros.length === 0
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
       {ok ? (
         <p className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
           <IconOk size={20} fill /> Tudo certo. Ao enviar, {supervisor} recebe a ficha para conferir.
@@ -26,12 +26,12 @@ export function RodapeEnvio({ erros, supervisor, onSalvar, onEnviar }: Props) {
           {geral ? geral.mensagem : `${erros.length} ${erros.length === 1 ? 'item para corrigir' : 'itens para corrigir'} — veja as linhas destacadas.`}
         </p>
       )}
-      <div className="flex shrink-0 gap-2">
+      <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex">
         <Button variante="secundario" onClick={onSalvar}>
-          <IconSalvar size={18} /> Salvar rascunho
+          <IconSalvar size={18} /> <span className="sm:hidden">Salvar</span><span className="hidden sm:inline">Salvar rascunho</span>
         </Button>
         <Button onClick={onEnviar} disabled={!ok}>
-          <IconEnviar size={18} /> Enviar para supervisora
+          <IconEnviar size={18} /> <span className="sm:hidden">Enviar</span><span className="hidden sm:inline">Enviar para supervisora</span>
         </Button>
       </div>
     </div>

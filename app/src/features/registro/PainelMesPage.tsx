@@ -147,7 +147,7 @@ export function PainelMesPage() {
                 </>
               ),
             },
-            { chave: 'obs', titulo: 'Observação', render: (l) => <span className="text-xs text-slate-600 dark:text-slate-300">{l.observacao ?? ''}</span> },
+            { chave: 'obs', titulo: 'Observação', render: (l) => l.observacao && <span className="text-xs text-slate-600 dark:text-slate-300">{l.observacao}</span> },
           ]}
         />
       </Card>

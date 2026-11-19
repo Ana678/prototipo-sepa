@@ -54,7 +54,7 @@ export function FichaFormPage() {
         onChange={(sessoes) => setFicha((f) => ({ ...f, sessoes }))}
       />
 
-      <div className="sticky bottom-0 -mx-12 mt-6 border-t border-slate-200 bg-white/90 px-12 py-3 backdrop-blur xl:-mx-16 xl:px-16 dark:border-slate-800 dark:bg-slate-950/90">
+      <div className="sticky bottom-0 -mx-4 mt-6 border-t border-slate-200 bg-white/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-12 lg:px-12 xl:-mx-16 xl:px-16 dark:border-slate-800 dark:bg-slate-950/90">
         <RodapeEnvio
           erros={erros}
           supervisor={atuante.supervisor}

@@ -69,10 +69,11 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
   }
 
   return (
-    <li className={cn('group px-5 py-4', temErro && 'bg-red-50/50 dark:bg-red-950/20')}>
-      <div className="grid grid-cols-[minmax(0,15rem)_minmax(0,1fr)_3.5rem_15.5rem_2rem] items-center gap-4">
+    <li className={cn('group px-4 py-4 sm:px-5', temErro && 'bg-red-50/50 dark:bg-red-950/20')}>
+      {/* Celular: usuário, total e excluir no topo; datas e situação embaixo, na largura toda */}
+      <div className="grid grid-cols-[minmax(0,1fr)_3.5rem_2rem] items-center gap-x-3 gap-y-3 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_3.5rem_15.5rem_2rem] md:gap-4">
         {/* Usuário */}
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="order-1 flex min-w-0 items-center gap-3 md:order-none">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sepa-50 text-xs font-semibold text-sepa-700 dark:bg-sepa-900/60 dark:text-sepa-200">
             {usuario ? iniciais(usuario.nome) : '?'}
           </span>
@@ -83,7 +84,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
         </div>
 
         {/* Datas */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="order-4 col-span-full flex flex-wrap items-center gap-1.5 md:order-none md:col-span-1">
           {linha.datas.map((d, i) => {
             const fora = d < limites.min || d > limites.max
             return (
@@ -117,7 +118,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
         </div>
 
         {/* Total (calculado) */}
-        <div className="text-center" title="Calculado a partir das datas">
+        <div className="order-2 text-center md:order-none" title="Calculado a partir das datas">
           <p className="text-lg leading-none font-semibold text-slate-900 tabular-nums dark:text-slate-50">{linha.datas.length}</p>
           <p className="mt-0.5 text-[10px] tracking-wide text-slate-400 uppercase dark:text-slate-500">sessões</p>
         </div>
@@ -126,6 +127,7 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
         <SelectMenu
           ariaLabel="Situação no mês"
           tamanho="sm"
+          className="order-5 col-span-full md:order-none md:col-span-1"
           value={linha.situacao}
           onChange={(situacao) => onChange({ ...linha, situacao })}
           opcoes={OPCOES_SITUACAO}
@@ -136,14 +138,14 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
           type="button"
           onClick={removerUsuario}
           aria-label="Remover usuário da ficha"
-          className="flex size-8 items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-50 hover:text-red-700 focus:opacity-100 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+          className="order-3 flex size-8 items-center justify-center rounded-lg text-slate-400 transition group-hover:opacity-100 md:order-none md:opacity-0 hover:bg-red-50 hover:text-red-700 focus:opacity-100 dark:hover:bg-red-950/40 dark:hover:text-red-400"
         >
           <IconRemover size={18} />
         </button>
       </div>
 
       {/* Observação + erros, alinhados sob as datas */}
-      <div className="mt-2 ml-12 space-y-1">
+      <div className="mt-2 space-y-1 md:ml-12">
         {editandoObs || linha.observacao ? (
           <Input
             autoFocus={editandoObs}

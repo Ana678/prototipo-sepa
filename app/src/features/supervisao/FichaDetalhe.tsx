@@ -45,14 +45,14 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
   return (
     <div className="flex h-full flex-col">
       {/* Cabeçalho: quem, qual mês e o tamanho da ficha */}
-      <header className="flex items-start justify-between gap-6 border-b border-slate-100 pb-4 dark:border-slate-800">
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 border-b border-slate-100 pb-4 dark:border-slate-800">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">{ficha.atuante.nome}</h2>
           <p className="text-sm text-slate-500 first-letter:uppercase dark:text-slate-400">
             Ficha de {nomeReferencia(ficha.referencia)} · {ficha.atuante.vinculo} · enviada em {dataBR(ficha.enviadaEm)}
           </p>
         </div>
-        <dl className="flex shrink-0 gap-6 text-right">
+        <dl className="flex shrink-0 gap-6 sm:text-right">
           <div>
             <dt className="text-xs text-slate-500 dark:text-slate-400">Usuários</dt>
             <dd className="text-xl font-semibold tabular-nums text-slate-900 dark:text-slate-50">{ficha.linhas.length}</dd>
@@ -92,8 +92,8 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
               </h3>
               <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
                 {linhas.map((l) => (
-                  <li key={l.usuario} className="flex items-start gap-4 px-4 py-3">
-                    <div className="w-48 shrink-0">
+                  <li key={l.usuario} className="flex flex-wrap items-start gap-x-4 gap-y-2 px-4 py-3 sm:flex-nowrap">
+                    <div className="min-w-0 flex-1 sm:w-48 sm:flex-none">
                       <p className="font-medium text-slate-900 dark:text-slate-50">{l.usuario}</p>
                       {SELO[l.situacao] && (
                         <div className="mt-1">
@@ -101,7 +101,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
                         </div>
                       )}
                     </div>
-                    <div className="min-w-0 flex-1">
+                    <div className="order-last w-full min-w-0 sm:order-none sm:w-auto sm:flex-1">
                       <div className="flex flex-wrap gap-1.5">
                         {l.datas.map((d) => (
                           <span key={d} className="rounded-md bg-slate-100 px-2 py-0.5 text-sm tabular-nums text-slate-700 dark:bg-slate-800 dark:text-slate-200">
@@ -155,7 +155,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
                 ))}
               </div>
               {salas === 'excecao' && (
-                <div className="mt-3 flex items-center gap-3">
+                <div className="mt-3 flex flex-wrap items-center gap-3">
                   <label htmlFor="excecao-ate" className="text-sm font-medium whitespace-nowrap text-slate-700 dark:text-slate-200">
                     Salas liberadas até
                   </label>
@@ -169,7 +169,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
 
       {/* Ação + consequência para as salas, sempre visível */}
       <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
-        <p className="flex min-w-64 flex-1 items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+        <p className="flex min-w-60 flex-1 items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
           <Icon nome="key" size={18} />
           {modo === 'ver' && bloqueioAuto
             ? `Mesmo validando, o acesso de ${primeiroNome} às salas segue bloqueado até declarar os atendimentos pendentes.`
@@ -179,7 +179,7 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
               ? `${primeiroNome} fica sem acesso às salas até a correção ser validada.`
               : `${primeiroNome} pode usar as salas até ${excecaoAte ? dataCurta(excecaoAte) : '—'}, mesmo com a pendência.`}
         </p>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:shrink-0 [&>*]:flex-1 sm:[&>*]:flex-none">
           {modo === 'ver' ? (
             <>
               <Button variante="perigo" onClick={() => setModo('devolver')}>

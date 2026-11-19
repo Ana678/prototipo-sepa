@@ -35,7 +35,7 @@ export function CalendarioSessoes({ limites, selecionadas, onAdicionar, onRemove
       </PopoverButton>
 
       <PopoverPanel
-        anchor={{ to: 'bottom start', gap: 8 }}
+        anchor={{ to: 'bottom start', gap: 8, padding: 12 }}
         transition
         className="z-50 w-72 rounded-xl border border-slate-200 bg-white p-4 shadow-lg ring-1 ring-black/5 transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0 dark:border-slate-700 dark:bg-slate-900 dark:ring-white/5"
       >

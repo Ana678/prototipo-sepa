@@ -78,10 +78,10 @@ export function RelatoriosPage() {
             </button>
           ))}
         </div>
-        <div className="flex items-end gap-3">
+        <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:items-end">
           <SelectMenu
             label="Ano"
-            className="w-44"
+            className="sm:w-44"
             value={ano}
             onChange={setAno}
             opcoes={[
@@ -91,7 +91,7 @@ export function RelatoriosPage() {
           />
           <SelectMenu
             label="Período"
-            className="w-64"
+            className="sm:w-64"
             value={periodo}
             onChange={setPeriodo}
             opcoes={[

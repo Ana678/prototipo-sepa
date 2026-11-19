@@ -68,6 +68,7 @@ export function RelatorioGestao({ r }: { r: Relatorio }) {
         <DataTable
           porPagina={false}
           chaveLinha={(l) => l.modalidade}
+          celular="tabela"
           linhas={usuarios.modVinculo}
           colunas={[
             { chave: 'm', titulo: 'Modalidade', render: (l) => <span className="font-medium text-slate-800 dark:text-slate-100">{l.modalidade}</span> },
@@ -89,6 +90,7 @@ export function RelatorioGestao({ r }: { r: Relatorio }) {
         <DataTable
           porPagina={false}
           chaveLinha={(l) => l.modalidade}
+          celular="tabela"
           linhas={atendimentos.porTerapeuta}
           colunas={[
             { chave: 'm', titulo: 'Modalidade', render: (l) => <span className="font-medium text-slate-800 dark:text-slate-100">{l.modalidade}</span> },

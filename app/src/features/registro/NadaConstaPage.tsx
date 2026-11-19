@@ -31,7 +31,7 @@ export function NadaConstaPage() {
     <>
       <PageHeader titulo="Nada Consta" subtitulo="Histórico do discente em todos os anos em que atuou no SEPA." />
 
-      <div className="grid grid-cols-[18rem_1fr] gap-5">
+      <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
         <Card titulo="Buscar discente">
           <div className="relative">
             <IconBuscar size={18} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400 dark:text-slate-500" />

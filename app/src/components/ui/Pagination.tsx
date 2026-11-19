@@ -38,9 +38,9 @@ export function Pagination({ pagina, totalItens, porPagina, opcoesPorPagina = [5
         <strong className="font-semibold text-slate-800 tabular-nums dark:text-slate-100">{totalItens}</strong>
       </p>
 
-      <div className="flex items-center gap-5">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          Linhas por página
+          <span className="max-sm:hidden">Linhas por página</span>
           <SelectMenu
             ariaLabel="Linhas por página"
             tamanho="sm"
@@ -52,7 +52,7 @@ export function Pagination({ pagina, totalItens, porPagina, opcoesPorPagina = [5
         </div>
 
         <div className="flex items-center gap-1">
-          <button className={botao} onClick={() => onPagina(1)} disabled={pagina === 1} aria-label="Primeira página">
+          <button className={cn(botao, 'max-sm:hidden')} onClick={() => onPagina(1)} disabled={pagina === 1} aria-label="Primeira página">
             <Icon nome="first_page" size={20} />
           </button>
           <button className={botao} onClick={() => onPagina(pagina - 1)} disabled={pagina === 1} aria-label="Página anterior">
@@ -75,7 +75,7 @@ export function Pagination({ pagina, totalItens, porPagina, opcoesPorPagina = [5
           <button className={botao} onClick={() => onPagina(pagina + 1)} disabled={pagina === totalPaginas} aria-label="Próxima página">
             <Icon nome="chevron_right" size={20} />
           </button>
-          <button className={botao} onClick={() => onPagina(totalPaginas)} disabled={pagina === totalPaginas} aria-label="Última página">
+          <button className={cn(botao, 'max-sm:hidden')} onClick={() => onPagina(totalPaginas)} disabled={pagina === totalPaginas} aria-label="Última página">
             <Icon nome="last_page" size={20} />
           </button>
         </div>

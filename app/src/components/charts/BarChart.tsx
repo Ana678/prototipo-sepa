@@ -30,7 +30,7 @@ export function BarChart({ dados, unidade, mostrarPercentual = false }: Props) {
         return (
           <li
             key={d.rotulo}
-            className="group relative grid grid-cols-[11.5rem_1fr_5.5rem] items-center gap-3 rounded-md py-0.5"
+            className="group relative grid grid-cols-[1fr_5.5rem] items-center gap-x-3 gap-y-1 rounded-md py-0.5 sm:grid-cols-[11.5rem_1fr_5.5rem]"
             onMouseEnter={() => setAtivo(d.rotulo)}
             onMouseLeave={() => setAtivo(null)}
             onFocus={() => setAtivo(d.rotulo)}
@@ -38,7 +38,8 @@ export function BarChart({ dados, unidade, mostrarPercentual = false }: Props) {
             tabIndex={0}
             aria-label={`${d.rotulo}: ${fmt.format(d.valor)} ${unidade}`}
           >
-            <span className="truncate text-sm text-slate-600 dark:text-slate-300">{d.rotulo}</span>
+            {/* no celular o rótulo fica numa linha própria, acima da barra */}
+            <span className="col-span-2 truncate text-sm text-slate-600 sm:col-span-1 dark:text-slate-300">{d.rotulo}</span>
             <span className="relative h-5">
               <span
                 className="absolute inset-y-0 left-0 rounded-r-[4px] bg-sepa-600 transition-opacity group-hover:bg-sepa-700 dark:bg-sepa-400 dark:group-hover:bg-sepa-300"
@@ -50,7 +51,7 @@ export function BarChart({ dados, unidade, mostrarPercentual = false }: Props) {
               {mostrarPercentual && <span className="ml-1 text-xs font-normal text-slate-500 dark:text-slate-400">{pct.toFixed(1)}%</span>}
             </span>
             {ativo === d.rotulo && (
-              <span className="pointer-events-none absolute -top-9 left-36 z-10 rounded-md bg-slate-900 dark:bg-slate-700 px-2.5 py-1 text-xs whitespace-nowrap text-white shadow">
+              <span className="pointer-events-none absolute -top-9 left-0 z-10 max-sm:hidden sm:left-36 rounded-md bg-slate-900 dark:bg-slate-700 px-2.5 py-1 text-xs whitespace-nowrap text-white shadow">
                 {d.rotulo}: <strong>{fmt.format(d.valor)}</strong> {unidade} ({pct.toFixed(1)}%)
               </span>
             )}

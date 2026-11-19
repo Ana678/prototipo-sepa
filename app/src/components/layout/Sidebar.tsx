@@ -1,3 +1,4 @@
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import { NavLink } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { NOMES_PERFIL, usePerfil } from '../../context/PerfilContext'
@@ -17,6 +18,7 @@ import {
   IconRelatorios,
   IconUsuarios,
   IconValidar,
+  Icon,
   type IconeComponente,
 } from '../ui/icons'
 
@@ -80,14 +82,49 @@ function iniciais(nome: string) {
   return (partes[0][0] + (partes.at(-1)?.[0] ?? '')).toUpperCase()
 }
 
-export function Sidebar() {
+interface Props {
+  /** Gaveta do celular (abaixo de lg). */
+  aberta: boolean
+  onFechar: () => void
+}
+
+/** No computador fica fixa à esquerda; no celular vira gaveta aberta pelo botão de menu. */
+export function Sidebar({ aberta, onFechar }: Props) {
+  return (
+    <>
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-sepa-600 text-white lg:flex dark:border-r dark:border-white/5 dark:bg-sepa-900">
+        <ConteudoMenu />
+      </aside>
+
+      <Dialog open={aberta} onClose={onFechar} className="relative z-50 lg:hidden">
+        <DialogBackdrop transition className="fixed inset-0 bg-slate-900/50 transition duration-200 data-closed:opacity-0" />
+        <DialogPanel
+          transition
+          className="fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col bg-sepa-600 text-white shadow-xl transition duration-200 ease-out data-closed:-translate-x-full dark:bg-sepa-900"
+        >
+          <button
+            type="button"
+            onClick={onFechar}
+            aria-label="Fechar menu"
+            className="absolute top-3.5 right-3 flex size-9 items-center justify-center rounded-lg text-sepa-100 hover:bg-white/10 hover:text-white"
+          >
+            <Icon nome="close" size={22} />
+          </button>
+          <ConteudoMenu onNavegar={onFechar} />
+        </DialogPanel>
+      </Dialog>
+    </>
+  )
+}
+
+function ConteudoMenu({ onNavegar }: { onNavegar?: () => void }) {
   const { perfil } = usePerfil()
   const nome = USUARIO[perfil]
 
   return (
-    <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-sepa-600 text-white dark:border-r dark:border-white/5 dark:bg-sepa-900">
+    <>
       {/* Marca */}
-      <div className="flex h-16 items-center border-b border-white/10 px-6">
+      <div className="flex h-16 shrink-0 items-center border-b border-white/10 px-6">
         <img src={logo} alt="SEPA — Serviço de Psicologia Aplicada" className="w-24" />
       </div>
 
@@ -102,9 +139,10 @@ export function Sidebar() {
                   <NavLink
                     to={item.para}
                     end
+                    onClick={onNavegar}
                     className={({ isActive }) =>
                       cn(
-                        'relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                        'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors lg:py-2',
                         isActive
                           ? 'bg-white/15 font-semibold text-white'
                           : 'font-medium text-sepa-100 hover:bg-white/8 hover:text-white',
@@ -154,6 +192,6 @@ export function Sidebar() {
         </div>
         <p className="mt-2 px-3 text-[11px] text-sepa-200/70">Fichas e Relatórios · protótipo v0.1</p>
       </div>
-    </aside>
+    </>
   )
 }

@@ -16,9 +16,11 @@ interface Props<T> {
   vazio?: string
   /** Linhas por página. `false` desliga a paginação. Padrão: 10. */
   porPagina?: number | false
+  /** No celular: cartões (padrão) ou a própria tabela com rolagem lateral (bom para matrizes de números). */
+  celular?: 'cartoes' | 'tabela'
 }
 
-export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum registro.', porPagina: porPaginaInicial = 10 }: Props<T>) {
+export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum registro.', porPagina: porPaginaInicial = 10, celular = 'cartoes' }: Props<T>) {
   const paginar = porPaginaInicial !== false
   const [porPagina, setPorPagina] = useState(porPaginaInicial || 10)
   const [paginaPedida, setPagina] = useState(1)
@@ -30,7 +32,31 @@ export function DataTable<T>({ colunas, linhas, chaveLinha, vazio = 'Nenhum regi
 
   return (
     <div>
-    <div className="overflow-x-auto">
+    {/* Celular: cada linha vira um cartão (1ª coluna como título, as demais como rótulo: valor) */}
+    <ul className={cn('divide-y divide-slate-100 md:hidden dark:divide-slate-800', celular === 'tabela' && 'hidden')}>
+      {linhas.length === 0 && <li className="px-1 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{vazio}</li>}
+      {visiveis.map((l) => {
+        const [primeira, ...resto] = colunas
+        return (
+          <li key={chaveLinha(l)} className="py-3 text-sm">
+            <div className="mb-2">{primeira.render(l)}</div>
+            <dl className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)] gap-x-3 gap-y-1.5">
+              {resto.map((c) => {
+                const valor = c.render(l)
+                if (valor == null || valor === '' || valor === false) return null
+                return (
+                  <div key={c.chave} className="contents">
+                    <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">{c.titulo}</dt>
+                    <dd className={cn('min-w-0', c.alinhar === 'direita' && 'tabular-nums')}>{valor}</dd>
+                  </div>
+                )
+              })}
+            </dl>
+          </li>
+        )
+      })}
+    </ul>
+    <div className={cn('overflow-x-auto', celular === 'cartoes' && 'hidden md:block')}>
       <table className="w-full text-left text-sm">
         <thead>
           <tr className="border-b border-slate-200 dark:border-slate-800 text-xs tracking-wide text-slate-500 dark:text-slate-400 uppercase">

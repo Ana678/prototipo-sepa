@@ -94,6 +94,14 @@ export function ValidacaoPage() {
   /** id da ficha a validar, ou `pend:<atuanteId>` para uma não enviada. */
   const [selecionada, setSelecionada] = useState<string | undefined>(fila[0]?.id)
   const [grupoAberto, setGrupoAberto] = useState<Grupo | null>('validar')
+  /** No celular, lista e detalhe não cabem lado a lado: um de cada vez. */
+  const [verDetalhe, setVerDetalhe] = useState(false)
+
+  function abrir(id: string) {
+    setSelecionada(id)
+    setVerDetalhe(true)
+    window.scrollTo({ top: 0 })
+  }
 
   /** Abrir um grupo fecha o outro e já mostra a primeira ficha dele. */
   function alternar(g: Grupo) {
@@ -111,6 +119,7 @@ export function ValidacaoPage() {
     setFila(resto)
     if (!resto.length && naoEnviadas.length) setGrupoAberto('naoEnviadas')
     setSelecionada(resto[0]?.id ?? (naoEnviadas[0] && `pend:${naoEnviadas[0].atuante.id}`))
+    setVerDetalhe(false)
     toast(msg)
   }
 
@@ -121,15 +130,15 @@ export function ValidacaoPage() {
         subtitulo={`${supervisorLogado.nome} · ${fila.length} para conferir · ${naoEnviadas.length} ainda não enviada(s)`}
       />
 
-      <div className="grid min-h-[32rem] grid-cols-[20rem_1fr] gap-5">
-        <div className="space-y-3">
+      <div className="grid gap-5 lg:min-h-[32rem] lg:grid-cols-[20rem_1fr]">
+        <div className={cn('space-y-3', verDetalhe && 'hidden lg:block')}>
           <GrupoLista id="grupo-validar" titulo="Para validar" total={fila.length} aberto={grupoAberto === 'validar'} onAlternar={() => alternar('validar')}>
             <ul className="space-y-2" aria-label="Fichas aguardando validação">
               {fila.map((f) => (
                 <ItemLista
                   key={f.id}
                   ativo={f.id === selecionada}
-                  onClick={() => setSelecionada(f.id)}
+                  onClick={() => abrir(f.id)}
                   titulo={f.atuante.nome}
                   detalhe={`${nomeReferencia(f.referencia)} · ${f.atuante.vinculo} · enviada ${dataBR(f.enviadaEm)}${f.linhas.length ? "" : " · sem atendimentos"}`}
                   marcador={<Bolinha alerta={alertaDe(f.atuante.id)} />}
@@ -156,7 +165,7 @@ export function ValidacaoPage() {
                   <ItemLista
                     key={l.atuante.id}
                     ativo={`pend:${l.atuante.id}` === selecionada}
-                    onClick={() => setSelecionada(`pend:${l.atuante.id}`)}
+                    onClick={() => abrir(`pend:${l.atuante.id}`)}
                     titulo={l.atuante.nome}
                     detalhe={`${nomeReferencia('2026-10')} · ${l.atuante.vinculo} · ${l.status === 'nao_enviada' ? 'não iniciada' : `rascunho com ${l.sessoes ?? 0} sessões`}`}
                     marcador={<Bolinha alerta={alertaDe(l.atuante.id)} />}
@@ -172,7 +181,15 @@ export function ValidacaoPage() {
           </p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className={cn(!verDetalhe && 'hidden lg:block')}>
+        <button
+          type="button"
+          onClick={() => setVerDetalhe(false)}
+          className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-sepa-700 hover:text-sepa-900 lg:hidden dark:text-sepa-200 dark:hover:text-white"
+        >
+          <Icon nome="arrow_back" size={18} /> Voltar para a lista
+        </button>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
           {ficha ? (
             <FichaDetalhe
               key={ficha.id}
@@ -190,6 +207,7 @@ export function ValidacaoPage() {
           ) : (
             <p className="text-sm text-slate-500 dark:text-slate-400">Selecione uma ficha.</p>
           )}
+        </div>
         </div>
       </div>
     </>
