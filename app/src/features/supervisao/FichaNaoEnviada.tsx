@@ -57,8 +57,8 @@ export function FichaNaoEnviada({ linha, onCobrar }: { linha: LinhaPainel; onCob
         <ConferenciaChave atuanteId={atuante.id} nome={atuante.nome} referencia={REFERENCIA} />
       </div>
 
-      <footer className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
-        <p className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+      <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+        <p className="flex min-w-64 flex-1 items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
           <Icon nome={bloqueado ? 'key_off' : 'key'} size={18} />
           {bloqueado
             ? `Acesso às salas bloqueado: ${primeiro} retirou a chave e não declarou o atendimento em 15 dias.`

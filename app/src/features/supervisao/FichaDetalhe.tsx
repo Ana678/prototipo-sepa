@@ -168,8 +168,8 @@ export function FichaDetalhe({ ficha, onValidar, onDevolver }: Props) {
       </div>
 
       {/* Ação + consequência para as salas, sempre visível */}
-      <footer className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
-        <p className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+      <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+        <p className="flex min-w-64 flex-1 items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
           <Icon nome="key" size={18} />
           {modo === 'ver' && bloqueioAuto
             ? `Mesmo validando, o acesso de ${primeiroNome} às salas segue bloqueado até declarar os atendimentos pendentes.`

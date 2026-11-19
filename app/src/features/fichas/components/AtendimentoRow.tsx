@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Input } from '../../../components/ui/Field'
 import { SelectMenu, type Opcao } from '../../../components/ui/SelectMenu'
-import { IconAdicionar, IconAlertaErro, Icon, IconRemover } from '../../../components/ui/icons'
+import { IconAlertaErro, Icon, IconRemover } from '../../../components/ui/icons'
+import { CalendarioSessoes } from './CalendarioSessoes'
 import { useConfirmar } from '../../../context/ConfirmContext'
 import { cn } from '../../../lib/cn'
 import { diaMes } from '../../../lib/datas'
@@ -32,7 +33,6 @@ function iniciais(nome: string) {
 }
 
 export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRemover }: Props) {
-  const [adicionandoData, setAdicionandoData] = useState(false)
   const [editandoObs, setEditandoObs] = useState(false)
   const temErro = erros.length > 0
   const confirmar = useConfirmar()
@@ -64,9 +64,8 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
   }
 
   function adicionarData(valor: string) {
-    if (!valor) return
+    if (!valor || linha.datas.includes(valor)) return
     onChange({ ...linha, datas: [...linha.datas, valor].sort() })
-    setAdicionandoData(false)
   }
 
   return (
@@ -109,26 +108,12 @@ export function AtendimentoRow({ linha, usuario, limites, erros, onChange, onRem
               </span>
             )
           })}
-          {adicionandoData ? (
-            <Input
-              type="date"
-              autoFocus
-              aria-label="Data da sessão"
-              min={limites.min}
-              max={limites.max}
-              onChange={(e) => adicionarData(e.target.value)}
-              onBlur={() => setAdicionandoData(false)}
-              className="w-36 py-0.5! text-xs!"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setAdicionandoData(true)}
-              className="inline-flex items-center gap-1 rounded-md border border-dashed border-slate-300 px-2 py-1 text-xs font-medium text-slate-500 hover:border-sepa-400 hover:text-sepa-700 dark:border-slate-600 dark:text-slate-400 dark:hover:text-sepa-200"
-            >
-              <IconAdicionar size={14} /> data
-            </button>
-          )}
+          <CalendarioSessoes
+            limites={limites}
+            selecionadas={linha.datas}
+            onAdicionar={adicionarData}
+            onRemover={(d) => removerData(linha.datas.indexOf(d))}
+          />
         </div>
 
         {/* Total (calculado) */}
