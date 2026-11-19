@@ -149,3 +149,23 @@ O `Relatório de Alinhamento de Escopo` tem afirmações que **as fontes do SEPA
 ## 7. Leitura geral
 
 O SEPA hoje funciona como um **banco de dados feito à mão**: uma ficha em Word vira linhas em várias planilhas anuais, e essas planilhas viram os quadros do relatório. O valor do nosso módulo está em **fazer a ficha mensal entrar no sistema já estruturada e validada**. Com isso, os relatórios, o controle de pendências, o Nada Consta e o limite de 1 ano viram consultas sobre o mesmo dado, em vez de retrabalho.
+
+---
+
+## 7. Inventário de relatórios (levantado em 2026-11-19)
+
+São **três relatórios**, não um. Eles saem das mesmas fontes (Relatórios de Gestão 2023–2025, `Dados para Relatórios 2026`, `Planilha de Atividades e Participação 2026`, entrevistas 6, 7, 10, 12 e 14).
+
+| Relatório | Quem usa | Blocos | De onde vem o dado |
+|---|---|---|---|
+| **Relatório de Gestão** (anual + parcial no meio do ano) | Direção → CCHLA; prestação de contas à equipe | Equipe por vínculo (Q1) · Ações de extensão e público (Q2–3) · Usuários: únicos, 1/2/3 modalidades, por modalidade, modalidade × vínculo UFRN (Q5–11) · Atendimentos por modalidade (Q12) e por vínculo de quem atendeu (Tab. 8/2024) · Atividades coletivas no SEPA por categoria (Q13) · Lista de espera | Ficha validada; registro de atividades; SIGAA; cadastro de atuantes; lista de espera **sem fonte conhecida** |
+| **Relatório do Interações** (SIGAA) | Gestão | Atividades no SEPA **sem projetos próprios** (ex.: Acolher) · Atividades fora do SEPA e público · Usuários (aba própria na planilha) | Registro de atividades; regra de usuários **a confirmar** |
+| **Supervisões** | Registro / gestão | Encontros e participações por supervisor e mês | Registro de atividades (supervisão com supervisor) |
+
+Fora do módulo: setor de POT, gestão de pessoas e patrimônio (texto livre da direção).
+
+### Lacunas de vocabulário (ficha × relatório)
+- Ficha tem **Atenção Psicológica** e **Outra**; o relatório não. A planilha tem **Triagem de grupo** e **Orientação acadêmica**; a ficha não.
+- O relatório conta **estágio não obrigatório**; a ficha não tem essa opção de vínculo.
+- O registro de atividades precisava de: categoria **Representação do SEPA**, marca de **projeto próprio** e **supervisor** nas supervisões (incluídos no protótipo).
+- **Curso/centro** do aluno atendido não está na ficha (pedido da entrevista 12).

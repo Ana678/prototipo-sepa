@@ -126,7 +126,7 @@
   <p class="lead">Construímos a proposta a partir dos relatórios de gestão 2023–2025, das planilhas e da ficha mensal enviadas pelo SEPA e das entrevistas com o Setor de Registro. Antes de seguir, precisamos confirmar se entendemos certo.</p>
   <div class="body grid g3">
     <div class="card tint"><h3>1 · A ideia central</h3><p>A Ficha de Acompanhamento Mensal passa a ser preenchida <b>no sistema</b> e vira a fonte única de dados para controle, Nada Consta e relatórios.</p></div>
-    <div class="card tint"><h3>2 · Os fluxos</h3><p>Os <b>8 casos de uso</b> principais: quem faz o quê, em que ordem, e quais regras do SEPA o sistema aplica sozinho.</p></div>
+    <div class="card tint"><h3>2 · Os fluxos</h3><p>Os <b>10 casos de uso</b> principais: quem faz o quê, em que ordem, e quais regras do SEPA o sistema aplica sozinho.</p></div>
     <div class="card tint"><h3>3 · As telas</h3><p>Como cada caso de uso aparece no <b>protótipo navegável</b>, com dados fictícios, e o que ainda está em aberto.</p></div>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>2</span></div>
@@ -172,18 +172,18 @@
       <ul style="padding-left:18px;font-size:14px;line-height:1.6;color:var(--sepa-100)">
         <li>Identificação vem do cadastro</li>
         <li>Uma linha por usuário, com a situação no mês</li>
-        <li>Total calculado pelas datas</li>
+        <li>Datas marcadas num calendário; total calculado</li>
         <li>Não envia com erro</li>
         <li>Validação do supervisor no sistema</li>
       </ul>
     </div>
     <div class="arrow" style="font-size:40px;width:60px;flex-basis:60px">›</div>
     <div class="grid g2" style="gap:12px">
-      <div class="card"><h3>Painel de envios</h3><p>Quem enviou, quem está atrasado, cobrança automática.</p></div>
-      <div class="card"><h3>Uso de salas</h3><p>Liberado / bloqueado por pessoa, repassado ao módulo de salas.</p></div>
+      <div class="card"><h3>Painel de envios</h3><p>Quem enviou, quem não iniciou, quem parou no rascunho; cobrança em um clique.</p></div>
+      <div class="card"><h3>Liberação de salas e chaves</h3><p>Calculada por pessoa e consultada pela recepção; bloqueio automático com 15 dias sem declarar.</p></div>
       <div class="card"><h3>Usuários e casos</h3><p>Desfechos e alerta do limite de 1 ano (+1).</p></div>
       <div class="card"><h3>Nada Consta</h3><p>Histórico do discente em todos os anos.</p></div>
-      <div class="card" style="grid-column:span 2"><h3>Relatórios</h3><p>Quadros do Relatório de Gestão e do Interações, com usuários sem duplicidade, filtros e exportação.</p></div>
+      <div class="card" style="grid-column:span 2"><h3>Relatórios</h3><p>Relatório de Gestão, do Interações e de Supervisões, com usuários sem duplicidade, anual ou parcial.</p></div>
     </div>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>4</span></div>
@@ -193,16 +193,17 @@
 <section class="slide">
   <div class="bar"></div>
   <p class="kicker">Quem usa</p>
-  <h2>Quatro perfis, um mesmo dado</h2>
-  <div class="body grid g4">
-    <div class="card"><span class="pill">Atuante</span><h3 style="margin-top:10px">Estagiário · Extensionista · Técnico</h3><ul><li>Preenche a ficha do mês</li><li>Acompanha a situação das fichas</li><li>Vê se está liberado para salas</li></ul></div>
-    <div class="card"><span class="pill">Supervisor</span><h3 style="margin-top:10px">Supervisor de campo</h3><ul><li>Confere a ficha com o SigSaúde</li><li>Valida ou devolve com pendência</li><li>Pode pedir “não bloquear”</li></ul></div>
-    <div class="card"><span class="pill">Registro</span><h3 style="margin-top:10px">Setor de Registro</h3><ul><li>Acompanha envios e cobra</li><li>Registra desfechos e atividades</li><li>Emite Nada Consta e relatórios</li></ul></div>
-    <div class="card"><span class="pill">Gestão</span><h3 style="margin-top:10px">Direção do SEPA</h3><ul><li>Consulta indicadores</li><li>Gera os relatórios de Gestão e do Interações</li></ul></div>
+  <h2>Cinco perfis, um mesmo dado</h2>
+  <div class="body grid" style="grid-template-columns:repeat(5,1fr);gap:14px">
+    <div class="card"><span class="pill">Atuante</span><h3 style="margin-top:10px">Estagiário · Extensionista · Técnico</h3><ul><li>Preenche a ficha do mês</li><li>Declara cada atendimento em até 15 dias</li><li>Vê se está liberado para salas</li></ul></div>
+    <div class="card"><span class="pill">Supervisor</span><h3 style="margin-top:10px">Supervisor de campo</h3><ul><li>Confere a ficha com o SigSaúde e as retiradas de chave</li><li>Valida ou devolve</li><li>Pode liberar salas até uma data</li><li>Vê quem não enviou</li></ul></div>
+    <div class="card"><span class="pill">Registro</span><h3 style="margin-top:10px">Setor de Registro</h3><ul><li>Acompanha envios e cobra</li><li>Registra desfechos e atividades</li><li>Emite Nada Consta</li></ul></div>
+    <div class="card"><span class="pill">Recepção</span><h3 style="margin-top:10px">Recepção do SEPA</h3><ul><li>Consulta se pode entregar a chave</li><li>Vê só nome, vínculo e situação</li></ul></div>
+    <div class="card"><span class="pill">Gestão</span><h3 style="margin-top:10px">Direção do SEPA</h3><ul><li>Gera os relatórios de Gestão, do Interações e de Supervisões</li></ul></div>
   </div>
   <div class="card" style="margin-top:18px;background:var(--bg)">
     <h3>Fora do escopo deste módulo</h3>
-    <p>Prontuários (continuam no SigSaúde) · reserva de salas e chaves (outro grupo; nós só fornecemos “liberado/bloqueado”) · ficha de cadastro do usuário (dificuldade de acesso digital do público) · digitalização de documentos.</p>
+    <p>Prontuários (continuam no SigSaúde) · reserva de salas, agenda e entrega de chaves (outro grupo: nós fornecemos a liberação e lemos as retiradas de chave) · ficha de cadastro do usuário · digitalização de documentos.</p>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>5</span></div>
 </section>
@@ -211,19 +212,21 @@
 <section class="slide">
   <div class="bar"></div>
   <p class="kicker">Casos de uso</p>
-  <h2>Os 8 casos de uso principais</h2>
+  <h2>Os 10 casos de uso principais</h2>
   <div class="body">
-    <table>
-      <thead><tr><th style="width:70px">#</th><th>Caso de uso</th><th style="width:230px">Ator principal</th><th style="width:250px">Tela no protótipo</th></tr></thead>
+    <table style="font-size:13.5px">
+      <thead><tr><th style="width:70px">#</th><th>Caso de uso</th><th style="width:220px">Ator principal</th><th style="width:290px">Tela no protótipo</th></tr></thead>
       <tbody>
         <tr><td class="ucnum">UC01</td><td><b>Preencher e enviar a ficha mensal</b></td><td>Atuante</td><td>Minhas fichas · Preencher ficha</td></tr>
         <tr><td class="ucnum">UC02</td><td><b>Validar ou devolver a ficha</b></td><td>Supervisor de campo</td><td>Validar fichas</td></tr>
         <tr><td class="ucnum">UC03</td><td><b>Acompanhar envios e cobrar pendentes</b></td><td>Setor de Registro</td><td>Painel do mês</td></tr>
-        <tr><td class="ucnum">UC04</td><td><b>Informar situação para uso de salas</b></td><td>Sistema → módulo de salas</td><td>Painel do mês · Minhas fichas</td></tr>
-        <tr><td class="ucnum">UC05</td><td><b>Acompanhar usuários, desfechos e limite de 1 ano</b></td><td>Setor de Registro</td><td>Usuários e casos</td></tr>
-        <tr><td class="ucnum">UC06</td><td><b>Registrar atividades coletivas</b></td><td>Setor de Registro</td><td>Atividades coletivas</td></tr>
-        <tr><td class="ucnum">UC07</td><td><b>Consultar histórico e emitir Nada Consta</b></td><td>Setor de Registro</td><td>Nada Consta</td></tr>
-        <tr><td class="ucnum">UC08</td><td><b>Gerar relatórios</b></td><td>Gestão · Setor de Registro</td><td>Relatórios</td></tr>
+        <tr><td class="ucnum">UC04</td><td><b>Calcular a liberação de salas</b></td><td>Sistema</td><td>Painel · Minhas fichas · Liberação de chaves</td></tr>
+        <tr><td class="ucnum">UC05</td><td><b>Bloquear com 15 dias sem declarar</b></td><td>Sistema</td><td>Minhas fichas · Validar fichas</td></tr>
+        <tr><td class="ucnum">UC06</td><td><b>Consultar liberação antes de entregar a chave</b></td><td>Recepção</td><td>Liberação de chaves</td></tr>
+        <tr><td class="ucnum">UC07</td><td><b>Acompanhar usuários, desfechos e limite de 1 ano</b></td><td>Setor de Registro</td><td>Usuários e casos</td></tr>
+        <tr><td class="ucnum">UC08</td><td><b>Registrar atividades coletivas</b></td><td>Setor de Registro</td><td>Atividades coletivas</td></tr>
+        <tr><td class="ucnum">UC09</td><td><b>Consultar histórico e emitir Nada Consta</b></td><td>Setor de Registro</td><td>Nada Consta</td></tr>
+        <tr><td class="ucnum">UC10</td><td><b>Gerar relatórios</b></td><td>Gestão · Setor de Registro</td><td>Relatórios</td></tr>
       </tbody>
     </table>
   </div>
@@ -235,17 +238,18 @@
   <div class="bar"></div>
   <p class="kicker">Como os casos de uso se encadeiam</p>
   <h2>O ciclo de cada mês</h2>
-  <p class="lead">Os prazos são os que o SEPA já pratica: ficha até o dia 05 e permissão de salas em janelas do dia 15 ao dia 15.</p>
+  <p class="lead">Os prazos que o SEPA já pratica (ficha até o dia 05, salas em janelas do dia 15 ao dia 15) mais a regra do grupo: atendimento declarado em até 15 dias.</p>
   <div class="body">
     <div class="timeline">
-      <div class="tl"><div class="dot">1–31</div><b>Atendimentos</b><p>O atuante registra sessões no SigSaúde e vai preenchendo o rascunho da ficha.</p></div>
+      <div class="tl"><div class="dot">1–31</div><b>Atendimentos</b><p>A cada atendimento, o atuante declara a data no rascunho da ficha (UC01).</p></div>
       <div class="tl"><div class="dot">03</div><b>Lembrete</b><p>Quem ainda não enviou recebe aviso automático (UC03).</p></div>
-      <div class="tl"><div class="dot">05</div><b>Prazo de envio</b><p>Ficha enviada ao supervisor; depois disso fica “atrasada” (UC01).</p></div>
-      <div class="tl"><div class="dot">05–15</div><b>Validação</b><p>Supervisor confere com o SigSaúde e valida ou devolve (UC02).</p></div>
-      <div class="tl"><div class="dot">15</div><b>Nova janela de salas</b><p>Liberado ou bloqueado por pessoa, informado ao módulo de salas (UC04).</p></div>
+      <div class="tl"><div class="dot">05</div><b>Prazo de envio</b><p>Ficha enviada ao supervisor; quem não enviou aparece para ele e para o Registro.</p></div>
+      <div class="tl"><div class="dot">05–15</div><b>Validação</b><p>Supervisor confere com o SigSaúde e as chaves; valida ou devolve (UC02).</p></div>
+      <div class="tl"><div class="dot">15</div><b>Nova janela de salas</b><p>Liberação calculada por pessoa e consultada pela recepção (UC04, UC06).</p></div>
     </div>
-    <div class="card tint" style="margin-top:34px">
-      <p><b>Ao longo do ano</b>, os mesmos dados alimentam UC05 (limite de 1 ano), UC06 (atividades), UC07 (Nada Consta) e UC08 (relatórios de meio e fim de ano), sem redigitação.</p>
+    <div class="grid g2" style="margin-top:30px;gap:14px">
+      <div class="card" style="background:var(--err-bg);border-color:#fecaca"><p><b>O tempo todo · regra dos 15 dias (UC05):</b> retirou a chave e não declarou o atendimento daquele dia em 15 dias → bloqueio automático, até declarar. Sem retirada de chave, não há bloqueio.</p></div>
+      <div class="card tint"><p><b>Ao longo do ano</b>, os mesmos dados alimentam UC07 (limite de 1 ano), UC08 (atividades), UC09 (Nada Consta) e UC10 (relatórios de meio e fim de ano), sem redigitação.</p></div>
     </div>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>7</span></div>
@@ -258,24 +262,24 @@
   <h2>Preencher e enviar a ficha mensal</h2>
   <div class="uc">
     <div>
-      <div class="meta"><span class="tag"><b>Gatilho:</b> fim do mês de atendimentos</span><span class="tag"><b>Prazo:</b> dia 05</span></div>
+      <div class="meta"><span class="tag"><b>Gatilho:</b> cada atendimento</span><span class="tag"><b>Prazo de envio:</b> dia 05</span></div>
       <h4>Fluxo principal</h4>
       <ol>
         <li>Abre a ficha do mês: nome, vínculo e supervisor vêm do cadastro.</li>
         <li>Adiciona cada usuário atendido (modalidade + usuário), uma linha por usuário.</li>
-        <li>Em cada linha, marca as datas das sessões; o total é calculado.</li>
+        <li>Marca os dias das sessões num <b>calendário do mês</b>; o total é calculado.</li>
         <li>Escolhe a <b>situação no mês</b>: segue, iniciou, desistiu, perdeu a vaga, alta ou encaminhado.</li>
         <li>Corrige o que estiver destacado e envia ao supervisor.</li>
       </ol>
       <h4>Regras aplicadas pelo sistema</h4>
       <ul class="rules">
-        <li>Data fora do mês ou repetida bloqueia o envio</li>
-        <li>Encaminhamento exige dizer para onde</li>
-        <li>Mês sem atendimentos exige justificativa</li>
+        <li>Data fora do mês ou repetida bloqueia o envio; dias futuros não podem ser marcados</li>
+        <li>Encaminhamento exige dizer para onde; mês sem atendimentos exige justificativa</li>
+        <li>Atendimento não declarado em 15 dias gera aviso e, depois, bloqueio (UC05)</li>
       </ul>
       <div class="resolve"><b>Resolve:</b> erros de digitação, “2 datas e 3 atendimentos” e o ciclo de retificação por e-mail.</div>
     </div>
-    <div class="shot"><img src="img/tela-fichas-nova.png" alt=""><span class="cap">Preencher ficha do mês</span></div>
+    <div class="shot"><img src="img/tela-fichas-nova.png" alt=""><span class="cap">Preencher ficha · calendário de sessões</span></div>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>8</span></div>
 </section>
@@ -290,17 +294,17 @@
       <div class="meta"><span class="tag"><b>Gatilho:</b> ficha enviada</span><span class="tag"><b>Substitui:</b> e-mail “zero pendências”</span></div>
       <h4>Fluxo principal</h4>
       <ol>
-        <li>Vê a fila de fichas dos seus supervisionados.</li>
-        <li>Abre a ficha e confere as datas com o SigSaúde.</li>
-        <li><b>Valida</b>: o Registro é notificado e a pessoa fica liberada.</li>
+        <li>Vê duas listas: <b>para validar</b> e <b>não enviadas</b>. Bolinha amarela = pendência; vermelha = bloqueado.</li>
+        <li>Abre a ficha: sessões por modalidade e <b>retiradas de chave × atendimentos declarados</b>.</li>
+        <li>Confere com o SigSaúde e <b>valida</b>; o rodapé mostra o efeito nas salas.</li>
       </ol>
       <h4>Fluxo alternativo: pendência</h4>
       <ol>
-        <li>Clica em <b>Devolver com pendência</b> e descreve o problema.</li>
-        <li>Opcional: marca <b>“não bloquear salas”</b> quando a correção já foi combinada.</li>
-        <li>O atuante corrige e reenvia; volta para a fila.</li>
+        <li><b>Devolve para correção</b> e descreve o problema.</li>
+        <li>Responde “pode usar as salas enquanto corrige?”: <b>não</b>, ou <b>sim, até uma data</b> (exceção).</li>
+        <li>Em fichas não enviadas, cobra o aluno em um clique.</li>
       </ol>
-      <div class="resolve"><b>Resolve:</b> a triangulação ficha × SigSaúde × Registro feita por e-mails soltos, com risco de se perder.</div>
+      <div class="resolve"><b>Resolve:</b> a triangulação ficha × SigSaúde × Registro por e-mails soltos, e o “atendeu e não registrou”.</div>
     </div>
     <div class="shot"><img src="img/tela-validacao.png" alt=""><span class="cap">Validar fichas</span></div>
   </div>
@@ -310,35 +314,57 @@
 <!-- 10. UC03 + UC04 -->
 <section class="slide">
   <div class="bar"></div>
-  <p class="kicker">UC03 e UC04 · Setor de Registro</p>
-  <h2>Acompanhar envios e informar o uso de salas</h2>
+  <p class="kicker">UC03 e UC04 · Setor de Registro e sistema</p>
+  <h2>Acompanhar envios e calcular a liberação de salas</h2>
   <div class="uc">
     <div>
       <div class="meta"><span class="tag"><b>Substitui:</b> “verdinhos e vermelhinhos” + planilha de permissões</span></div>
       <h4>UC03 · Acompanhar e cobrar</h4>
       <ol>
-        <li>O painel mostra fichas esperadas, enviadas, validadas e atrasadas.</li>
-        <li>Filtra por vínculo (4º ano, 5º ano, extensão, técnico).</li>
-        <li>Um clique envia lembrete a quem está pendente.</li>
+        <li>Painel com fichas esperadas, enviadas e validadas.</li>
+        <li>Separa <b>não iniciada</b> de <b>rascunho não enviado</b> (“9 sessões, falta enviar”).</li>
+        <li>Um clique envia lembrete a cada grupo.</li>
       </ol>
-      <h4>UC04 · Situação para salas</h4>
+      <h4>UC04 · Liberação na janela 15 → 15, por pessoa</h4>
       <ul class="rules">
-        <li>Ficha validada → <b>liberado</b> na janela 15 → 15</li>
-        <li>Não enviada ou com pendência → <b>bloqueado</b></li>
-        <li>Pedido do supervisor → <b>liberado (exceção)</b>, com observação</li>
-        <li>Bloqueio vale <b>para a pessoa</b>, mesmo com dois vínculos</li>
+        <li>Ficha do mês anterior validada → <b>liberado</b>; aguardando o supervisor → <b>ainda não liberado</b></li>
+        <li>Ficha devolvida → <b>bloqueado</b>, salvo exceção do supervisor até uma data</li>
+        <li>Chave retirada sem atendimento declarado em 15 dias → <b>bloqueio automático</b></li>
+        <li>Não enviou, mas não retirou chave → só pendência, <b>sem bloqueio</b></li>
+        <li>Vale para a pessoa: pendência num vínculo bloqueia todos</li>
       </ul>
-      <div class="resolve"><b>Resolve:</b> a recepção consultar duas fontes antes de entregar a chave. O módulo de salas lê a situação direto daqui.</div>
     </div>
     <div class="shot"><img src="img/tela-registro-painel.png" alt=""><span class="cap">Painel do mês</span></div>
   </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>10</span></div>
 </section>
 
-<!-- 11. UC05 -->
+<!-- 11. UC05 + UC06 -->
 <section class="slide">
   <div class="bar"></div>
-  <p class="kicker">UC05 · Setor de Registro</p>
+  <p class="kicker">UC05 e UC06 · Sistema e Recepção</p>
+  <h2>Bloqueio com 15 dias sem declarar e consulta da recepção</h2>
+  <div class="grid g2" style="margin-top:18px;flex:1;min-height:0">
+    <div style="display:flex;flex-direction:column;min-height:0">
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC05 · Bloquear com 15 dias sem declarar</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">A retirada de chave (módulo de salas) indica o dia do atendimento. Sem atendimento declarado na ficha naquele dia, o aluno é avisado com o prazo; <b>passados 15 dias, bloqueia sozinho</b> e libera quando declarar.</p>
+      <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> o aluno que atendeu e deixou a ficha em branco ou pela metade.</div>
+      <div class="shot" style="flex:1"><img src="img/tela-fichas.png" alt=""><span class="cap">Aviso ao aluno · Minhas fichas</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;min-height:0">
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC06 · Consultar antes de entregar a chave</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">A recepção digita o nome e vê <b>“Pode entregar a chave”</b> ou <b>“Não entregar”</b>, com a orientação de quem procurar. Também tem a lista da janela. <b>Não vê nada da ficha</b> nem dos pacientes.</p>
+      <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> olhar a agenda e depois a planilha de permissões antes de cada chave.</div>
+      <div class="shot" style="flex:1"><img src="img/tela-recepcao.png" alt=""><span class="cap">Liberação de chaves</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>11</span></div>
+</section>
+
+<!-- 12. UC07 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC07 · Setor de Registro</p>
   <h2>Acompanhar usuários, desfechos e o limite de 1 ano</h2>
   <div class="uc">
     <div>
@@ -359,107 +385,130 @@
     </div>
     <div class="shot"><img src="img/tela-registro-usuarios.png" alt=""><span class="cap">Usuários e casos</span></div>
   </div>
-  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>11</span></div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>12</span></div>
 </section>
 
-<!-- 12. UC06 + UC07 -->
+<!-- 13. UC08 + UC09 -->
 <section class="slide">
   <div class="bar"></div>
-  <p class="kicker">UC06 e UC07 · Setor de Registro</p>
+  <p class="kicker">UC08 e UC09 · Setor de Registro</p>
   <h2>Atividades coletivas e Nada Consta</h2>
   <div class="grid g2" style="margin-top:18px;flex:1;min-height:0">
     <div style="display:flex;flex-direction:column;min-height:0">
-      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC06 · Registrar atividade coletiva</h4>
-      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Reunião, formação, supervisão, grupo ou ação do Interações. A <b>categoria vem de uma lista fechada</b> e o local (no SEPA ou fora) é definido automaticamente.</p>
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC08 · Registrar atividade coletiva</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">A <b>categoria vem de uma lista fechada</b> (as do relatório). Supervisão pede <b>o supervisor</b>; o projeto vem de uma lista que diz se é <b>projeto próprio</b> (fica fora do relatório do Interações).</p>
       <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> a dúvida “onde eu boto isso?” na hora de montar o relatório.</div>
-      <div class="shot" style="flex:1"><img src="img/tela-registro-atividades.png" alt=""><span class="cap">Atividades coletivas</span></div>
+      <div class="shot" style="flex:1"><img src="img/tela-registro-atividades.png" alt=""><span class="cap">Registrar atividade</span></div>
     </div>
     <div style="display:flex;flex-direction:column;min-height:0">
-      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC07 · Consultar histórico e emitir Nada Consta</h4>
-      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Busca o discente e vê <b>todos os anos</b> em que atuou, com pendências de ficha e de SigSaúde. Só emite o documento <b>sem pendências</b>; mostra se já foi inserido no SIPAC.</p>
+      <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">UC09 · Consultar histórico e emitir Nada Consta</h4>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.5">Busca o discente e vê <b>todos os anos</b> em que atuou. Cada pendência leva à ficha no sistema ou ao SigSaúde. Só emite <b>sem pendências</b>; mostra se já foi inserido no SIPAC.</p>
       <div class="resolve" style="margin:10px 0 14px"><b>Resolve:</b> abrir a planilha de cada ano, aluno por aluno.</div>
       <div class="shot" style="flex:1"><img src="img/tela-registro-nada-consta.png" alt=""><span class="cap">Nada Consta</span></div>
     </div>
   </div>
-  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>12</span></div>
-</section>
-
-<!-- 13. UC08 -->
-<section class="slide">
-  <div class="bar"></div>
-  <p class="kicker">UC08 · Gestão e Setor de Registro</p>
-  <h2>Gerar relatórios</h2>
-  <div class="uc">
-    <div>
-      <div class="meta"><span class="tag"><b>Quando:</b> meio e fim do ano, ou pedidos pontuais</span></div>
-      <h4>Fluxo principal</h4>
-      <ol>
-        <li>Escolhe o modelo: <b>Gestão</b>, <b>Interações</b> ou personalizado.</li>
-        <li>Filtra por ano, período, modalidade e vínculo com a UFRN.</li>
-        <li>Confere os indicadores e quadros na tela.</li>
-        <li>Exporta (formato a confirmar).</li>
-      </ol>
-      <h4>Indicadores, como nos relatórios de 2024–2025</h4>
-      <ul class="rules">
-        <li>Usuários <b>sem duplicidade</b> e em 1, 2 ou 3 modalidades</li>
-        <li>Usuários por modalidade × vínculo (externo, aluno, servidor…)</li>
-        <li>Atendimentos por modalidade e por terapeuta</li>
-        <li>Atividades coletivas, participações e supervisões</li>
-        <li>Alunos por curso e centro</li>
-      </ul>
-      <div class="resolve"><b>Resolve:</b> refazer tudo a cada pedido e contar usuários copiando nomes de planilha em planilha.</div>
-    </div>
-    <div class="shot"><img src="img/tela-relatorios.png" alt=""><span class="cap">Relatórios</span></div>
-  </div>
   <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>13</span></div>
 </section>
 
-<!-- 14. RASTREABILIDADE -->
+<!-- 14. UC10 -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">UC10 · Gestão e Setor de Registro</p>
+  <h2>Gerar relatórios</h2>
+  <div class="uc">
+    <div>
+      <div class="meta"><span class="tag"><b>Quando:</b> meio do ano (fim do ciclo do 4º ano), fim do ano e pedidos pontuais</span></div>
+      <h4>Três relatórios, um mesmo dado</h4>
+      <ul class="rules">
+        <li><b>Gestão:</b> os quadros do relatório anual, na mesma ordem</li>
+        <li><b>Interações (SIGAA):</b> sem projetos próprios, com as ações fora do SEPA</li>
+        <li><b>Supervisões:</b> encontros e participações por supervisor e mês</li>
+      </ul>
+      <h4>Fluxo principal</h4>
+      <ol>
+        <li>Escolhe o relatório, o ano e o período (anual ou 1º semestre).</li>
+        <li>Vê <b>até onde os dados chegam</b> (“fichas validadas até setembro…”).</li>
+        <li>Cada bloco mostra <b>de onde vem o número</b>; exporta (formato a confirmar).</li>
+      </ol>
+      <div class="resolve"><b>Resolve:</b> refazer tudo a cada pedido, não saber “onde parou” e contar usuários copiando nomes de planilha em planilha.</div>
+    </div>
+    <div class="shot"><img src="img/tela-relatorios.png" alt=""><span class="cap">Relatórios</span></div>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>14</span></div>
+</section>
+
+<!-- 15. INVENTÁRIO DOS RELATÓRIOS -->
+<section class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Relatórios</p>
+  <h2>O que sai da ficha e o que depende de outra fonte</h2>
+  <div class="body">
+    <table style="font-size:13.5px">
+      <thead><tr><th>Bloco do relatório</th><th style="width:230px">Referência</th><th style="width:300px">De onde vem</th></tr></thead>
+      <tbody>
+        <tr><td><b>Usuários</b> sem duplicidade, em 1/2/3 modalidades, modalidade × vínculo UFRN</td><td>Quadros 5–11</td><td>Fichas validadas</td></tr>
+        <tr><td><b>Atendimentos</b> por modalidade e por vínculo de quem atendeu</td><td>Quadro 12 · Tabela 8 (2024)</td><td>Fichas validadas</td></tr>
+        <tr><td><b>Atividades coletivas</b> no SEPA, por categoria · <b>supervisões</b></td><td>Quadro 13</td><td>Registro de atividades</td></tr>
+        <tr><td><b>Ações fora do SEPA</b> (relatório do Interações)</td><td>Relatório no SIGAA</td><td>Registro de atividades</td></tr>
+        <tr><td><b>Equipe</b> por vínculo</td><td>Quadro 1</td><td>Cadastro de atuantes (outro grupo)</td></tr>
+        <tr><td><b>Ações de extensão</b> e público alcançado</td><td>Quadros 2–3</td><td>SIGAA, preenchido pelo Registro</td></tr>
+        <tr><td><b>Alunos por curso e centro</b></td><td>Pedido do Registro</td><td style="color:var(--warn)"><b style="color:var(--warn)">A definir</b> (SIGAA pelo CPF?)</td></tr>
+        <tr><td><b>Lista de espera</b></td><td>Seção de desafios</td><td style="color:var(--warn)"><b style="color:var(--warn)">A definir</b></td></tr>
+      </tbody>
+    </table>
+    <p class="lead" style="margin-top:16px;font-size:14px">Fora do módulo: setor de POT e a parte de pessoas e patrimônio (texto da direção).</p>
+  </div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>15</span></div>
+</section>
+
+<!-- 16. RASTREABILIDADE -->
 <section class="slide">
   <div class="bar"></div>
   <p class="kicker">Rastreabilidade</p>
   <h2>Cada dificuldade relatada tem uma resposta no sistema</h2>
   <div class="body">
-    <table>
-      <thead><tr><th style="width:42%">Dificuldade relatada pelo SEPA</th><th>Como o sistema responde</th><th style="width:150px">Caso de uso</th></tr></thead>
+    <table style="font-size:13.5px">
+      <thead><tr><th style="width:40%">Dificuldade relatada pelo SEPA</th><th>Como o sistema responde</th><th style="width:130px">Caso de uso</th></tr></thead>
       <tbody>
-        <tr><td>Ficha em Word com campos abertos e erros</td><td>Formulário com cadastro pré-preenchido, listas e validação antes do envio</td><td class="ucnum">UC01</td></tr>
-        <tr><td>Atrasos e cobrança manual</td><td>Painel de envios, lembrete automático e status “atrasada”</td><td class="ucnum">UC03</td></tr>
-        <tr><td>Conferência e liberação por e-mail</td><td>Validar / devolver no sistema, com exceção “não bloquear”</td><td class="ucnum">UC02 · UC04</td></tr>
-        <tr><td>Recepção consulta duas fontes para entregar a chave</td><td>Situação de salas disponível para o módulo de reservas</td><td class="ucnum">UC04</td></tr>
-        <tr><td>Levantamento manual do limite de 1 ano</td><td>Tempo de atendimento calculado e alertas automáticos</td><td class="ucnum">UC05</td></tr>
-        <tr><td>Dúvida sobre como classificar atividades</td><td>Categorias fixas escolhidas no registro</td><td class="ucnum">UC06</td></tr>
-        <tr><td>Nada Consta exige abrir a planilha de cada ano</td><td>Histórico do discente em todos os anos, numa tela</td><td class="ucnum">UC07</td></tr>
-        <tr><td>Relatório refeito a cada pedido; usuários duplicados</td><td>Relatórios com filtros, sobre o dado consolidado e deduplicado</td><td class="ucnum">UC08</td></tr>
-        <tr><td>Conhecimento concentrado em uma pessoa</td><td>Regras dentro do sistema, não na planilha de quem a montou</td><td class="ucnum">Todos</td></tr>
+        <tr><td>Ficha em Word com campos abertos e erros</td><td>Formulário com cadastro pré-preenchido, calendário e validação antes do envio</td><td class="ucnum">UC01</td></tr>
+        <tr><td>Atrasos e cobrança manual</td><td>Painel separando “não iniciada” e “rascunho”, com lembrete em um clique</td><td class="ucnum">UC03</td></tr>
+        <tr><td>Conferência e liberação por e-mail</td><td>Validar / devolver no sistema, com exceção “salas até uma data”</td><td class="ucnum">UC02 · UC04</td></tr>
+        <tr><td>Atendeu e não registrou (ou registrou pela metade)</td><td>Retiradas de chave × atendimentos declarados; bloqueio com 15 dias</td><td class="ucnum">UC02 · UC05</td></tr>
+        <tr><td>Recepção consulta duas fontes para entregar a chave</td><td>Tela “Liberação de chaves”, com a mesma regra do Registro</td><td class="ucnum">UC06</td></tr>
+        <tr><td>Levantamento manual do limite de 1 ano</td><td>Tempo de atendimento calculado e alertas automáticos</td><td class="ucnum">UC07</td></tr>
+        <tr><td>Dúvida sobre como classificar atividades</td><td>Categorias do relatório escolhidas no registro</td><td class="ucnum">UC08</td></tr>
+        <tr><td>Nada Consta exige abrir a planilha de cada ano</td><td>Histórico do discente em todos os anos, numa tela</td><td class="ucnum">UC09</td></tr>
+        <tr><td>Relatório refeito a cada pedido; não se sabe “onde parou”</td><td>Três relatórios sobre o dado consolidado, com aviso de cobertura</td><td class="ucnum">UC10</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>14</span></div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>16</span></div>
 </section>
 
-<!-- 15. PONTOS PARA VALIDAR -->
+<!-- 17. PONTOS PARA VALIDAR -->
 <section class="slide">
   <div class="bar"></div>
   <p class="kicker">Precisamos da ajuda de vocês</p>
   <h2>Pontos para validar</h2>
-  <div class="body grid g2" style="gap:6px 40px;align-content:start">
+  <div class="body grid g2" style="gap:0 40px;align-content:start;margin-top:14px">
     <div>
       <div class="q"><span class="n">1</span><p><b>A ficha no sistema substitui o Word por e-mail?</b><br><small>Base de toda a proposta · Registro e supervisores</small></p></div>
-      <div class="q"><span class="n">2</span><p><b>Quantas faltas levam à perda de vaga?</b> Consecutivas ou no total?<br><small>Regra citada, sem número definido · Coordenação</small></p></div>
-      <div class="q"><span class="n">3</span><p><b>Em que formato exportar os relatórios?</b> PDF, planilha, ambos?<br><small>Gestão</small></p></div>
-      <div class="q"><span class="n">4</span><p><b>Qual o prazo do supervisor para validar?</b> E o que acontece se não validar até o dia 15?<br><small>Supervisores · Coordenação</small></p></div>
-      <div class="q"><span class="n">5</span><p><b>De onde vem a lista de espera</b> que aparece no relatório de gestão?<br><small>Registro</small></p></div>
+      <div class="q"><span class="n">2</span><p><b>Retirada de chave sem atendimento</b> (supervisão, reunião, falta do paciente) deve contar para o bloqueio de 15 dias?<br><small>Coordenação · Registro</small></p></div>
+      <div class="q"><span class="n">3</span><p><b>Quem aguarda validação no dia 15 recebe a chave?</b> E ficha devolvida deve bloquear?<br><small>Supervisores · Coordenação</small></p></div>
+      <div class="q"><span class="n">4</span><p><b>Quantas faltas levam à perda de vaga?</b> Consecutivas ou no total?<br><small>Coordenação</small></p></div>
+      <div class="q"><span class="n">5</span><p><b>“Atenção Psicológica” e “Outra”</b> da ficha entram em qual modalidade do relatório?<br><small>Registro</small></p></div>
+      <div class="q"><span class="n">6</span><p><b>Quais usuários entram no relatório do Interações?</b><br><small>Gestão</small></p></div>
     </div>
     <div>
-      <div class="q"><span class="n">6</span><p><b>As categorias de atividades coletivas estão completas?</b><br><small>Registro · Gestão</small></p></div>
-      <div class="q"><span class="n">7</span><p><b>Quem cadastra estagiários, extensionistas e supervisores</b> a cada semestre?<br><small>Registro · outros grupos</small></p></div>
-      <div class="q"><span class="n">8</span><p><b>O que mais o Nada Consta precisa checar</b>, além de fichas e SigSaúde?<br><small>Registro</small></p></div>
-      <div class="q"><span class="n">9</span><p><b>Os relatórios de meio e fim de ano</b> são suficientes, ou a gestão quer um painel sempre atualizado?<br><small>Gestão</small></p></div>
-      <div class="q"><span class="n">10</span><p><b>O detalhamento por curso e centro</b> é necessário já na primeira versão?<br><small>Gestão</small></p></div>
+      <div class="q"><span class="n">7</span><p><b>De onde vem a lista de espera</b> e o <b>curso/centro</b> dos alunos atendidos?<br><small>Registro</small></p></div>
+      <div class="q"><span class="n">8</span><p><b>Em que formato exportar os relatórios?</b> PDF, planilha, ambos?<br><small>Gestão</small></p></div>
+      <div class="q"><span class="n">9</span><p><b>Quem cadastra estagiários, extensionistas e supervisores</b> a cada semestre?<br><small>Registro · outros grupos</small></p></div>
+      <div class="q"><span class="n">10</span><p><b>O que mais o Nada Consta precisa checar</b>, além de fichas e SigSaúde?<br><small>Registro</small></p></div>
+      <div class="q"><span class="n">11</span><p><b>O grupo de salas e chaves</b> pode nos passar cada retirada (pessoa, data, sala)?<br><small>Outro grupo</small></p></div>
+      <div class="q"><span class="n">12</span><p><b>A recepção faz mais alguma coisa</b> além de entregar chaves e reservar salas?<br><small>Recepção</small></p></div>
     </div>
   </div>
-  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>15</span></div>
+  <div class="foot"><span>SEPA · Fichas e Relatórios</span><span>17</span></div>
 </section>
 
 <!-- 16. PRÓXIMOS PASSOS -->
